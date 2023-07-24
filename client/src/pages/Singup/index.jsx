@@ -8,6 +8,7 @@ const Signup = () => {
     name: "",
     password: "",
   });
+  console.log(data);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
