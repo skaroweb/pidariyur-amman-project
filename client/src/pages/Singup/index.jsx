@@ -10,6 +10,7 @@ const Signup = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const serverURL = process.env.REACT_APP_SERVER_URL;
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -18,7 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:8080/api/users";
+      const url = `${serverURL}/api/users/`;
       const { data: res } = await axios.post(url, data);
       navigate("/login");
       console.log(res.message);

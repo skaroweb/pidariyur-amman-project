@@ -7,6 +7,8 @@ const PhoneNumberSearch = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [data, setData] = useState([]);
   const [showName, setShowName] = useState(false);
+  const [donationType, setDonationType] = useState("");
+  const [amount, setAmount] = useState("");
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -70,6 +72,56 @@ const PhoneNumberSearch = () => {
     }
   };
 
+  const handleSubmit = () => {
+    // Retrieve the JWT token from localStorage
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Decode the JWT token to get user information (e.g., user ID)
+      const decodedToken = parseJwt(token);
+      const currentUserId = decodedToken._id;
+
+      // Here, you can send the data to your Express API using axios.post
+      // Include the userId along with other donation data in the request body
+      const requestData = {
+        userId: currentUserId,
+        phoneNumber: searchNumber,
+        name,
+        donationType,
+        amount,
+      };
+      console.log(requestData);
+
+      // Make the API call using axios
+      axios
+        .post(`${serverURL}/api/donate/`, requestData)
+        .then((response) => {
+          console.log("Donation data sent successfully:", response.data);
+          // Reset the form fields after successful submission
+          setSearchNumber("");
+          setName("");
+          setDonationType("");
+          setAmount("");
+          setShowName(false);
+        })
+        .catch((error) => {
+          console.error("Error sending donation data:", error);
+        });
+    } else {
+      console.log("User not logged in. Unable to submit donation.");
+    }
+  };
+
+  const parseJwt = (token) => {
+    try {
+      const base64Payload = token.split(".")[1];
+      const payload = atob(base64Payload);
+      return JSON.parse(payload);
+    } catch (error) {
+      return null;
+    }
+  };
+
   return (
     <div>
       <input
@@ -92,6 +144,23 @@ const PhoneNumberSearch = () => {
         </ul>
       )}
       {showName && name !== "Not Found" && <p>Name: {name}</p>}
+      <select
+        value={donationType}
+        onChange={(e) => setDonationType(e.target.value)}
+      >
+        <option value="">Select Donation Type</option>
+        <option value="Type 1">Type 1</option>
+        <option value="Type 2">Type 2</option>
+        <option value="Type 3">Type 3</option>
+        {/* Add more options if needed */}
+      </select>
+      <input
+        type="text"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="Enter amount"
+      />
+      <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 };
