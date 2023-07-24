@@ -1,4 +1,10 @@
+import FormComponent from "../../components/Dashboard/Form";
+
 const Members = () => {
-  return <div>Members</div>;
+  return (
+    <div>
+      <FormComponent />
+    </div>
+  );
 };
 export default Members;

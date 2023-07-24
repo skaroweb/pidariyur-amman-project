@@ -6,6 +6,7 @@ const connection = require("./db");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const settingRoutes = require("./routes/setting");
+const memberRoutes = require("./routes/memberRoutes");
 
 // database connection
 connection();
@@ -15,8 +16,9 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/member", memberRoutes);
 app.use("/api/title", settingRoutes);
 
 const port = process.env.PORT || 8080;
