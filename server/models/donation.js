@@ -1,14 +1,23 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
-const donationSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true }, // Reference to the User model
-  receiptNo: { type: String },
-  phoneNumber: { type: String, required: true },
-  name: { type: String, required: true },
-  donationType: { type: String, required: true },
-  amount: { type: Number, required: true },
-});
+const donationSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    }, // Reference to the User model
+    receiptNo: { type: String },
+    phoneNumber: { type: String, required: true },
+    name: { type: String, required: true },
+    donationType: { type: String, required: true },
+    amount: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const validate = (data) => {
   const schema = Joi.object({

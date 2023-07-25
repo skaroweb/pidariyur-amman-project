@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { toggleValue } from "../../store/donationSlice";
 
-const PhoneNumberSearch = () => {
+const DonationForm = () => {
   const [searchNumber, setSearchNumber] = useState("");
   const [name, setName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -9,6 +11,7 @@ const PhoneNumberSearch = () => {
   const [showName, setShowName] = useState(false);
   const [donationType, setDonationType] = useState("");
   const [amount, setAmount] = useState("");
+  const dispatch = useDispatch();
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -27,7 +30,9 @@ const PhoneNumberSearch = () => {
 
   const findNameByPhoneNumber = (phoneNumber) => {
     const foundData = data.find(
-      (dataItem) => dataItem.phoneNumber === phoneNumber
+      (dataItem) =>
+        dataItem.phoneNumber === phoneNumber ||
+        dataItem.alternatePhoneNumber === phoneNumber
     );
     return foundData ? foundData.name : null;
   };
@@ -37,8 +42,10 @@ const PhoneNumberSearch = () => {
     setSearchNumber(value);
 
     // Filter the suggestions based on the input value
-    const filteredSuggestions = data.filter((dataItem) =>
-      dataItem.phoneNumber.includes(value)
+    const filteredSuggestions = data.filter(
+      (dataItem) =>
+        dataItem.phoneNumber.includes(value) ||
+        dataItem.alternatePhoneNumber.includes(value)
     );
 
     // Set suggestions to the filtered data or empty array if the input field is empty
@@ -89,14 +96,17 @@ const PhoneNumberSearch = () => {
         name,
         donationType,
         amount,
+        //amount: `Rs ${amount}`, // Add the symbol before the amount
       };
-      console.log(requestData);
+      //console.log(requestData);
 
       // Make the API call using axios
       axios
         .post(`${serverURL}/api/donate/`, requestData)
         .then((response) => {
           console.log("Donation data sent successfully:", response.data);
+          // Dispatch the toggleValue action to trigger a re-fetch of donation data
+          dispatch(toggleValue());
           // Reset the form fields after successful submission
           setSearchNumber("");
           setName("");
@@ -165,4 +175,4 @@ const PhoneNumberSearch = () => {
   );
 };
 
-export default PhoneNumberSearch;
+export default DonationForm;

@@ -26,6 +26,41 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Set up the update route
+router.put("/:id", async (req, res) => {
+  try {
+    const donationId = req.params.id;
+    const updatedData = req.body;
+    console.log(updatedData);
+    // Find the donation by ID and update its data
+    const donation = await Donation.findByIdAndUpdate(donationId, updatedData, {
+      new: true,
+    });
+
+    if (!donation) {
+      return res.status(404).json({ error: "Donation not found" });
+    }
+
+    return res.status(200).json(donation);
+  } catch (error) {
+    console.error("Error updating donation:", error);
+    return res.status(500).json({ error: "Error updating donation" });
+  }
+});
+
+// Create a new route to handle delete requests
+router.delete("/:id", async (req, res) => {
+  const donationId = req.params.id;
+  try {
+    // Use your database library (e.g., Mongoose) to remove the donation data from the database
+    await Donation.findByIdAndDelete(donationId);
+    res.status(200).json({ message: "Donation data deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting donation data:", error);
+    res.status(500).json({ message: "Error deleting donation data" });
+  }
+});
+
 // // Handle POST request to store donation data
 // router.post("/", (req, res) => {
 //   const { userId, phoneNumber, name, donationType, amount } = req.body;
@@ -47,5 +82,16 @@ router.post("/", async (req, res) => {
 //       res.status(500).json({ error: "Failed to save donation data" });
 //     });
 // });
+
+// Handle GET request to retrieve donation data
+router.get("/", (req, res) => {
+  Donation.find()
+    .then((donations) => {
+      res.json(donations);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to fetch donation data" });
+    });
+});
 
 module.exports = router;
