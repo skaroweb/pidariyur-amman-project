@@ -21,5 +21,5 @@ app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/title", settingRoutes);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3002;
 app.listen(port, console.log(`Listening on port ${port}...`));

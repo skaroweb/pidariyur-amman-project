@@ -7,6 +7,7 @@ const Setting = () => {
   const dispatch = useDispatch();
 
   const [updatedTitle, setUpdatedTitle] = useState("");
+  console.log(updatedTitle);
 
   const handleSubmit = async (e) => {
     dispatch(toggleValue());
