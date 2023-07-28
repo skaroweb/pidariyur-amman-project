@@ -1,11 +1,13 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
+
 import Main from "./pages/Main";
 import Signup from "./pages/Singup";
 import Login from "./pages/Login";
 import Report from "./pages/Report";
 import Members from "./pages/Members";
 import Setting from "./pages/Setting";
+import InvoicePage from "./pages/Main/InvoicePage";
 
 function App() {
   // State to track the user's authentication status
@@ -18,6 +20,8 @@ function App() {
       {user ? (
         <Route path="/" element={<DashboardLayout />}>
           <Route index exact element={<Main />} />
+          {/* Route to the InvoicePage component */}
+          <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
           <Route path="/report" exact element={<Report />} />
           <Route path="/members" exact element={<Members />} />
           <Route path="/setting" exact element={<Setting />} />

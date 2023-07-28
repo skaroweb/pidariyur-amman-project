@@ -1,9 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import toggleReducer from "./toggleSlice"; // Import the name reducer or any other reducers you have
+import titleReducer from "./titleSlice"; // Import the name reducer or any other reducers you have
+import donationReducer from "./donationSlice";
 
 const store = configureStore({
   reducer: {
-    toggle: toggleReducer,
+    title: titleReducer,
+    donation: donationReducer, // Add more reducers here if needed
+
     // Add other reducers if needed
   },
 });

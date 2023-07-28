@@ -7,6 +7,8 @@ const Login = () => {
   const [data, setData] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
 
+  const serverURL = process.env.REACT_APP_SERVER_URL;
+
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -14,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:3002/api/auth";
+      const url = `${serverURL}/api/auth/`;
       const { data: res } = await axios.post(url, data);
       localStorage.setItem("token", res.data);
       window.location = "/";
