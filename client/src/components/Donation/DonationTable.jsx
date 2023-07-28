@@ -57,13 +57,14 @@ const DonationTable = () => {
       <Table>
         <thead className="thead-light">
           <tr>
-            <th className="border-0">Created At</th>
+            <th className="border-0">Donation date</th>
             <th className="border-0">Receipt no</th>
             <th className="border-0">Donor Name</th>
             <th className="border-0">Phone Number</th>
             <th className="border-0">Donation Type</th>
             <th className="border-0">Amount</th>
-            <th className="border-0">Donation date</th>
+
+            <th className="border-0">Created At</th>
             <th className="border-0">Action</th>
           </tr>
         </thead>
@@ -71,19 +72,20 @@ const DonationTable = () => {
           {donationData.map((donation) => (
             <tr key={donation._id}>
               <td className="border-0">
-                {new Date(donation.createdAt).toLocaleString("en-US", {
+                {new Date(donation.selectedDate).toLocaleString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </td>
+
               <td className="border-0">{donation.donationId}</td>
               <td className="border-0">{donation.name}</td>
               <td className="border-0">{donation.phoneNumber}</td>
               <td className="border-0">{donation.donationType}</td>
               <td className="border-0">{donation.amount}</td>
               <td className="border-0">
-                {new Date(donation.selectedDate).toLocaleString("en-US", {
+                {new Date(donation.createdAt).toLocaleString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
