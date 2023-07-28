@@ -10,6 +10,17 @@ router.post("/", async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
+    const { phoneNumber, alternatePhoneNumber } = req.body;
+
+    // Check if the phone number already exists in the database
+    const existingMember = await Member.findOne({
+      $or: [{ phoneNumber }, { alternatePhoneNumber }],
+    });
+
+    if (existingMember) {
+      return res.status(400).send({ message: "Phone number already exists." });
+    }
+
     const existingUsers = await Member.find({});
     const memberCount = existingUsers.length + 1;
     const formattedMemberId = String(memberCount).padStart(4, "0");

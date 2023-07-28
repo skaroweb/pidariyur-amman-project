@@ -22,7 +22,7 @@ function App() {
         <Route path="/" element={<DashboardLayout />}>
           <Route index exact element={<Main />} />
           {/* Route to the InvoicePage component */}
-          <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
+          <Route path="/invoice/:id" element={<InvoicePage />} />
           <Route path="/report" exact element={<Report />} />
           <Route path="/members" exact element={<Members />} />
           <Route path="/members-list" exact element={<MemberList />} />

@@ -74,4 +74,21 @@ router.get("/", (req, res) => {
     });
 });
 
+// Route to get specific donation details by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const donationId = req.params.id;
+    const donation = await Donation.findById(donationId);
+
+    if (!donation) {
+      return res.status(404).json({ message: "Donation not found" });
+    }
+
+    return res.status(200).json(donation);
+  } catch (error) {
+    console.error("Error fetching donation details:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

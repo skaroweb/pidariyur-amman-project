@@ -12,9 +12,9 @@ const FormComponent = () => {
     aadhaar: "",
     address: "",
     district: "",
-    dob: "",
+    dob: "", // Set the date fields to empty initially
     email: "",
-    joiningDate: "",
+    joiningDate: "", // Set the date fields to empty initially
   });
 
   const handleChange = (e) => {
@@ -36,9 +36,9 @@ const FormComponent = () => {
         aadhaar: "",
         address: "",
         district: "",
-        dob: "",
+        dob: "", // Reset the date fields to empty
         email: "",
-        joiningDate: "",
+        joiningDate: "", // Reset the date fields to empty
       });
     } catch (error) {
       //setError(error.response.data.message);
@@ -115,6 +115,7 @@ const FormComponent = () => {
             name="dob"
             value={formData.dob}
             onChange={handleChange}
+            defaultValue={""} // Set the defaultValue to empty
           />
         </div>
         <div>
@@ -135,6 +136,7 @@ const FormComponent = () => {
             name="joiningDate"
             value={formData.joiningDate}
             onChange={handleChange}
+            defaultValue={""} // Set the defaultValue to empty
           />
         </div>
         <button type="submit">Submit</button>

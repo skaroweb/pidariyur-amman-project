@@ -5,6 +5,7 @@ import axios from "axios";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import ReactPaginate from "react-paginate";
 import styles from "../Report/Pagination.module.css";
+import ExcelReport from "../util/ExcelReport";
 
 const DonationList = () => {
   const [donationData, setDonationData] = useState([]);
@@ -20,6 +21,7 @@ const DonationList = () => {
 
   // State variable for selected memberId
   const [selectedMemberId, setSelectedMemberId] = useState("");
+  const [selectedMember, setSelectedMember] = useState(null);
 
   // Ref for the Typeahead component
   const phoneTypeaheadRef = useRef();
@@ -73,12 +75,11 @@ const DonationList = () => {
   };
 
   const handlePhoneNumberChange = (selected) => {
-    // Extract the selected memberId
-    const selectedMemberId = selected[0]?.memberId || "";
-
-    // Use the memberId for filtering
-    setSelectedMemberId(selectedMemberId);
+    // Extract the selected member (the member is still stored in the selected array)
+    const selectedMember = selected[0] || null;
+    setSelectedMember(selectedMember);
   };
+
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
@@ -121,8 +122,18 @@ const DonationList = () => {
       nextDayOfToDate.setDate(nextDayOfToDate.getDate() + 1); // Add one day to toDate
       const toDateFilter = toDate ? createdAt < nextDayOfToDate : true;
 
+      // Member filtering (if a member is selected)
+      const memberMatch = selectedMember
+        ? donation.memberId === selectedMember.memberId
+        : true;
+
       return (
-        phoneMatch && typeMatch && amountMatch && fromDateFilter && toDateFilter
+        phoneMatch &&
+        typeMatch &&
+        amountMatch &&
+        fromDateFilter &&
+        toDateFilter &&
+        memberMatch // Include the memberMatch in the filtering
       );
     });
 
@@ -135,6 +146,7 @@ const DonationList = () => {
     maxAmount,
     fromDate,
     toDate,
+    selectedMember, // Add selectedMember to the dependency array
     donationData,
   ]);
 
@@ -231,6 +243,7 @@ const DonationList = () => {
         </div>
         <button onClick={handleDeselect}>Deselect</button>
       </div>
+      <ExcelReport items={filteredData} />
       <Table>
         <thead className="thead-light">
           <tr>
