@@ -9,12 +9,14 @@ router.post("/", async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    const existingUsers = await Donation.find({});
-    const donationCount = existingUsers.length + 1;
-    const formattedDonationId = String(donationCount).padStart(4, "0");
+    //console.log(req.body);
+    // const existingUsers = await Donation.find({});
+    // const donationCount = existingUsers.length + 1;
+    // const formattedDonationId = String(donationCount).padStart(4, "0");
 
     const newDonation = new Donation({
-      receiptNo: formattedDonationId,
+      //  receiptNo: formattedDonationId,
+
       ...req.body,
     });
     await newDonation.save();
@@ -31,7 +33,7 @@ router.put("/:id", async (req, res) => {
   try {
     const donationId = req.params.id;
     const updatedData = req.body;
-    console.log(updatedData);
+    // console.log(updatedData);
     // Find the donation by ID and update its data
     const donation = await Donation.findByIdAndUpdate(donationId, updatedData, {
       new: true,
@@ -60,28 +62,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting donation data" });
   }
 });
-
-// // Handle POST request to store donation data
-// router.post("/", (req, res) => {
-//   const { userId, phoneNumber, name, donationType, amount } = req.body;
-
-//   const newDonation = new Donation({
-//     userId,
-//     phoneNumber,
-//     name,
-//     donationType,
-//     amount,
-//   });
-
-//   newDonation
-//     .save()
-//     .then((donation) => {
-//       res.json(donation);
-//     })
-//     .catch((error) => {
-//       res.status(500).json({ error: "Failed to save donation data" });
-//     });
-// });
 
 // Handle GET request to retrieve donation data
 router.get("/", (req, res) => {

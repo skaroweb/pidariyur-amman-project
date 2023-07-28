@@ -1,51 +1,33 @@
+// routes/settings.js
 const express = require("express");
 const router = express.Router();
-const titleModel = require("../models/setting"); // Assuming you have a Mongoose model for the title
+const Setting = require("../models/setting"); // Assuming you have a Setting model
 
+// Route to get the current setting
 router.get("/", async (req, res) => {
   try {
-    const title = await titleModel.find({});
-    res.send(title);
-
-    // console.log(title);
-  } catch (err) {
-    console.log(err);
+    const setting = await Setting.findOne();
+    res.json(setting);
+  } catch (error) {
+    console.error("Error fetching setting:", error);
+    res.status(500).json({ error: "Failed to fetch setting" });
   }
 });
 
-// // Route to update a specific title
-// router.put("/", async (req, res) => {
-//   try {
-//     const id = "64b9264a938e68c10530a88e";
-//     // Update the title in the database using your Mongoose model
-//     const updatedTitle = await titleModel.findByIdAndUpdate(id, {
-//       title: req.body.title,
-//     });
-//     //console.log(updatedTitle);
-//     //res.send(updatedTitle);
-//     res.status(200).json({ message: "Title updated successfully" });
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to update title" });
-//   }
-// });
-
-// Define the initial title data (just for demonstration purposes)
-let titleData = {
-  title: "Initial Title",
-};
-
-// Define the PUT route to update the title
+// Route to update the setting
 router.put("/", async (req, res) => {
-  const { title } = req.body;
-
-  if (!title) {
-    return res.status(400).json({ error: "Title is required" });
+  try {
+    const newTitle = req.body.title; // Assuming the request body contains the new title
+    const setting = await Setting.findOneAndUpdate(
+      {},
+      { title: newTitle },
+      { new: true, upsert: true }
+    );
+    res.json(setting);
+  } catch (error) {
+    console.error("Error updating setting:", error);
+    res.status(500).json({ error: "Failed to update setting" });
   }
-  const updatedTitle = await titleModel.updateOne({
-    title: title,
-  });
-
-  res.send(updatedTitle);
 });
 
 module.exports = router;

@@ -1,9 +1,15 @@
 const mongoose = require("mongoose");
 
-const titleSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-});
+const settingsSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const Title = mongoose.model("Title", titleSchema);
+const Settings = mongoose.model("Settings", settingsSchema);
 
-module.exports = Title;
+module.exports = Settings;

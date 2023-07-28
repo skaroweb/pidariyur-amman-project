@@ -1,9 +1,11 @@
+import React from "react";
+import { useTitleContext } from "../../context/TitleContext";
+import styles from "./styles.module.css";
+
 const Title = () => {
-  return (
-    <div>
-      <h1>test</h1>
-    </div>
-  );
+  const { title } = useTitleContext();
+
+  return <h1 className={styles.heading}>{title}</h1>;
 };
 
 export default Title;

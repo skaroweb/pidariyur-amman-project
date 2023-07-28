@@ -20,7 +20,7 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes);
-app.use("/api/title", settingRoutes);
+app.use("/api/setting", settingRoutes);
 app.use("/api/donate", donateRoutes);
 
 const port = process.env.PORT || 8080;
