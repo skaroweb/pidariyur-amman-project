@@ -1,4 +1,4 @@
-import FormComponent from "../../components/Dashboard/Form";
+import FormComponent from "../../components/Member/Form";
 
 const Members = () => {
   return (

@@ -6,6 +6,7 @@ import Signup from "./pages/Singup";
 import Login from "./pages/Login";
 import Report from "./pages/Report";
 import Members from "./pages/Members";
+import MemberList from "./pages/MemberList";
 import Setting from "./pages/Setting";
 import InvoicePage from "./pages/Main/InvoicePage";
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
           <Route path="/report" exact element={<Report />} />
           <Route path="/members" exact element={<Members />} />
+          <Route path="/members-list" exact element={<MemberList />} />
           <Route path="/setting" exact element={<Setting />} />
         </Route>
       ) : (

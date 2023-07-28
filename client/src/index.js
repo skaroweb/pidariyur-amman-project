@@ -9,13 +9,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 
 import App from "./App";
+import { TitleProvider } from "./context/TitleContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <TitleProvider>
+          <App />
+        </TitleProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Dropdown, ButtonGroup, Table } from "react-bootstrap";
+import React, { useEffect, useState, useRef } from "react";
+import { Table } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import axios from "axios";
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -8,54 +8,77 @@ import styles from "../Report/Pagination.module.css";
 
 const DonationList = () => {
   const [donationData, setDonationData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchName, setSearchName] = useState("");
-  // const [selectedName, setSelectedName] = useState("");
+  const [filteredData, setFilteredData] = useState([]); // State for filtered data
   const [searchPhone, setSearchPhone] = useState("");
   const [selectedType, setSelectedType] = useState("All");
   const [minAmount, setMinAmount] = useState(""); // State for minimum amount
   const [maxAmount, setMaxAmount] = useState(""); // State for maximum amount
-  // New state variables for date filters
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(0);
+
+  // State variable for selected memberId
+  const [selectedMemberId, setSelectedMemberId] = useState("");
+
+  // Ref for the Typeahead component
+  const phoneTypeaheadRef = useRef();
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
-    const params = {};
-    if (fromDate && toDate) {
-      params.fromDate = fromDate;
-      params.toDate = toDate;
-    }
-    // Make an API request to get all donations
+    // Fetch the donation list from the server
     axios
       .get(`${serverURL}/api/donate`)
       .then((response) => {
         setDonationData(response.data);
-        setFilteredData(response.data);
+        setFilteredData(response.data); // Initialize filtered data with all data
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching donations:", error);
         setLoading(false);
       });
-  }, [fromDate, toDate]);
+  }, [serverURL]);
 
-  const handleNameChange = (selected) => {
-    setSearchName(selected[0]?.name || "");
-    // setSelectedName(selected[0]?.name || ""); // Update the selected name
+  useEffect(() => {
+    // Apply filters whenever the selectedMemberId or donationData changes
+    const filteredDonations = donationData.filter((donation) => {
+      // Use the selectedMemberId for filtering
+      const memberMatch = selectedMemberId
+        ? donation.memberId === selectedMemberId
+        : true;
+      return memberMatch;
+    });
+    setFilteredData(filteredDonations);
+  }, [selectedMemberId, donationData]);
+
+  const getUniquePhoneNumbers = () => {
+    // Modify the function to return unique phone numbers
+    const uniquePhoneNumbers = Array.from(
+      new Set(donationData.map((donation) => donation.phoneNumber))
+    );
+    return uniquePhoneNumbers.map((phoneNumber) => ({
+      phoneNumber,
+      memberId: getMemberIdFromPhoneNumber(phoneNumber),
+      label: `${phoneNumber} - ${getDonorName(phoneNumber)}`,
+    }));
   };
 
-  const handlePhoneChange = (selected) => {
-    setSearchPhone(selected[0]?.phoneNumber || "");
-    // setSelectedName(
-    //   selected[0] ? `${selected[0].phoneNumber} - ${selected[0].name}` : ""
-    // );
+  const getMemberIdFromPhoneNumber = (phoneNumber) => {
+    const donation = donationData.find(
+      (donation) => donation.phoneNumber === phoneNumber
+    );
+    return donation ? donation.memberId : "";
   };
 
+  const handlePhoneNumberChange = (selected) => {
+    // Extract the selected memberId
+    const selectedMemberId = selected[0]?.memberId || "";
+
+    // Use the memberId for filtering
+    setSelectedMemberId(selectedMemberId);
+  };
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
@@ -78,11 +101,8 @@ const DonationList = () => {
   };
 
   useEffect(() => {
-    // Apply filters when searchName, searchPhone, selectedType, minAmount, maxAmount, fromDate, or toDate changes
+    // Apply filters when searchPhone, selectedType, minAmount, maxAmount, fromDate, or toDate changes
     const filteredDonations = donationData.filter((donation) => {
-      const nameMatch =
-        donation.name.toLowerCase().includes(searchName.toLowerCase()) ||
-        donation.phoneNumber.includes(searchName);
       const phoneMatch =
         donation.phoneNumber.includes(searchPhone) ||
         donation.phoneNumber.includes(searchPhone.replace(/\s/g, ""));
@@ -93,16 +113,22 @@ const DonationList = () => {
         (maxAmount === "" || Number(donation.amount) <= Number(maxAmount));
 
       // New date range filtering
-      const dateMatch =
-        (!fromDate || new Date(donation.createdAt) >= new Date(fromDate)) &&
-        (!toDate || new Date(donation.createdAt) <= new Date(toDate));
+      const createdAt = new Date(donation.createdAt);
+      const fromDateFilter = fromDate ? createdAt >= new Date(fromDate) : true;
 
-      return nameMatch && phoneMatch && typeMatch && amountMatch && dateMatch;
+      // Modify toDateFilter logic to include donations on the toDate date
+      const nextDayOfToDate = new Date(toDate);
+      nextDayOfToDate.setDate(nextDayOfToDate.getDate() + 1); // Add one day to toDate
+      const toDateFilter = toDate ? createdAt < nextDayOfToDate : true;
+
+      return (
+        phoneMatch && typeMatch && amountMatch && fromDateFilter && toDateFilter
+      );
     });
+
     setFilteredData(filteredDonations);
     setCurrentPage(0); // Reset to the first page whenever filters change
   }, [
-    searchName,
     searchPhone,
     selectedType,
     minAmount,
@@ -111,26 +137,9 @@ const DonationList = () => {
     toDate,
     donationData,
   ]);
-  console.log(filteredData);
-
-  const getUniqueNames = () => {
-    const uniqueNames = [
-      ...new Set(donationData.map((donation) => donation.name)),
-    ];
-    return uniqueNames.map((name) => ({ name }));
-  };
-
-  const getUniquePhoneNumbers = () => {
-    const uniquePhoneNumbers = [
-      ...new Set(donationData.map((donation) => donation.phoneNumber)),
-    ];
-    return uniquePhoneNumbers.map((phoneNumber) => ({
-      phoneNumber,
-      label: `${phoneNumber} - ${getDonorName(phoneNumber)}`,
-    }));
-  };
 
   const getDonorName = (phoneNumber) => {
+    // Here, you need to find the member based on the phoneNumber and get the name
     const donor = donationData.find(
       (donation) => donation.phoneNumber === phoneNumber
     );
@@ -149,17 +158,20 @@ const DonationList = () => {
     setCurrentPage(selectedPage.selected);
   };
 
-  const resetFilters = () => {
-    setSearchName("");
-    //setSelectedName("");
+  const handleDeselect = () => {
     setSearchPhone("");
     setSelectedType("All");
     setMinAmount("");
     setMaxAmount("");
     setFromDate("");
     setToDate("");
-  };
+    setSelectedMemberId("");
+    phoneTypeaheadRef.current.clear();
 
+    // Reset filteredData to show all donations (initialize with all data)
+    setFilteredData(donationData);
+    setCurrentPage(0);
+  };
   const calculateTotalAmount = () => {
     // Calculate the total amount based on the filteredData
     const totalAmount = filteredData.reduce((total, donation) => {
@@ -174,16 +186,10 @@ const DonationList = () => {
       <h2>Donations Table</h2>
       <div className="filter-container">
         <Typeahead
-          id="name-search"
-          labelKey="name"
-          onChange={handleNameChange}
-          options={getUniqueNames()}
-          placeholder="Search by Name"
-        />
-        <Typeahead
+          ref={phoneTypeaheadRef}
           id="phone-search"
           labelKey={(option) => option.label}
-          onChange={handlePhoneChange}
+          onChange={handlePhoneNumberChange}
           options={getUniquePhoneNumbers()}
           placeholder="Search by Phone Number"
         />
@@ -222,7 +228,7 @@ const DonationList = () => {
             placeholder="To Date"
           />
         </div>
-        <button onClick={resetFilters}>Deselect</button>
+        <button onClick={handleDeselect}>Deselect</button>
       </div>
       <Table>
         <thead className="thead-light">
@@ -238,7 +244,7 @@ const DonationList = () => {
         <tbody>
           {currentData.map((donation) => (
             <tr key={donation._id}>
-              <td className="border-0">{donation.receiptNo}</td>
+              <td className="border-0">{donation.donationId}</td>
               <td className="border-0">{donation.name}</td>
               <td className="border-0">{donation.phoneNumber}</td>
               <td className="border-0">{donation.donationType}</td>
@@ -265,6 +271,9 @@ const DonationList = () => {
           nextLinkClassName={styles.paginationLink}
           disabledClassName={styles.paginationDisabled}
           activeClassName={styles.paginationActive}
+          forcePage={currentPage} // Set the active page
+          pageRangeDisplayed={2}
+          marginPagesDisplayed={1}
         />
       )}
 

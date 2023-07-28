@@ -39,32 +39,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-//GET a specific member by memberId:
-
-router.get("/:memberId", async (req, res) => {
-  try {
-    const member = await Member.findOne({ memberId: req.params.memberId });
-    if (member) {
-      res.json(member);
-    } else {
-      res.status(404).json({ message: "Member not found." });
-    }
-  } catch (err) {
-    console.error("Error getting member:", err);
-    res.status(500).json({ error: "Failed to get member." });
-  }
-});
-
 //UPDATE a member by memberId:
-router.put("/:memberId", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { error } = validate(req.body);
 
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    const updatedMember = await Member.findOneAndUpdate(
-      { memberId: req.params.memberId },
+    const updatedMember = await Member.findByIdAndUpdate(
+      req.params.id,
       req.body,
       { new: true }
     );
@@ -82,11 +66,10 @@ router.put("/:memberId", async (req, res) => {
 
 //DELETE a member by memberId:
 
-router.delete("/:memberId", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const deletedMember = await Member.findOneAndDelete({
-      memberId: req.params.memberId,
-    });
+    // console.log(req.params.memberId);
+    const deletedMember = await Member.findByIdAndDelete(req.params.id);
 
     if (deletedMember) {
       res.json(deletedMember);

@@ -40,6 +40,18 @@ const Header = () => {
 
             <li>
               <NavLink
+                to="/members-list"
+                className={({ isActive }) =>
+                  isActive ? "NavActive" : "inactive"
+                }
+              >
+                <i className="fa fa-users" aria-hidden="true"></i>
+                <span>Members List</span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
                 to="/report"
                 className={({ isActive }) =>
                   isActive ? "NavActive" : "inactive"

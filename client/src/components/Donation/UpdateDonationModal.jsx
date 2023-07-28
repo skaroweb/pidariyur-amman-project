@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, Form, Button } from "react-bootstrap";
 import { toggleValue } from "../../store/donationSlice";
@@ -8,9 +8,10 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
   const dispatch = useDispatch();
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
+  // Initialize the state with the donationData prop
   const [updateData, setUpdateData] = useState({
-    donationType: "",
-    amount: "",
+    donationType: donationData.donationType,
+    amount: donationData.amount,
   });
 
   const handleInputChange = (event) => {
@@ -39,6 +40,14 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
       console.error("Error updating donation:", error);
     }
   };
+
+  // Reset the state when the donationData prop changes
+  useEffect(() => {
+    setUpdateData({
+      donationType: donationData.donationType,
+      amount: donationData.amount,
+    });
+  }, [donationData]);
 
   return (
     <Modal show={show} onHide={handleClose}>
