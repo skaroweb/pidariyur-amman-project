@@ -16,18 +16,6 @@ const Header = () => {
           <ul className={styles.header_nav}>
             <li>
               <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  isActive ? "NavActive" : "inactive"
-                }
-              >
-                <i className="fa fa-pie-chart" aria-hidden="true"></i>
-                <span>Donation</span>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
                 to="/members"
                 className={({ isActive }) =>
                   isActive ? "NavActive" : "inactive"
@@ -35,6 +23,17 @@ const Header = () => {
               >
                 <i className="fa fa-users" aria-hidden="true"></i>
                 <span>Members</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive ? "NavActive" : "inactive"
+                }
+              >
+                <i className="fa fa-pie-chart" aria-hidden="true"></i>
+                <span>Donation</span>
               </NavLink>
             </li>
 

@@ -3,7 +3,6 @@ import axios from "axios";
 import { Card, Col, Row } from "react-bootstrap"; // Import Bootstrap card and grid components
 import UpdateMemberModal from "./UpdateMemberModal"; // Import the modal component
 import DeleteMemberModal from "./DeleteMemberModal"; // Import the modal component
-import ComponentToImage from "../util/ComponentToImage";
 
 const List = () => {
   const [memberData, setMemberData] = useState([]);
@@ -125,6 +124,14 @@ const List = () => {
     fetchMemberList();
   }, []);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -143,38 +150,39 @@ const List = () => {
                 <Card.Title>{member.name}</Card.Title>
               </Card.Header>
               {/* Card body */}
-              <ComponentToImage>
-                <Card.Body>
-                  <Card.Text>
-                    <strong>Name:</strong> {member.name}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Phone Number:</strong> {member.phoneNumber}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Alternate Phone Number:</strong>{" "}
-                    {member.alternatePhoneNumber}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Aadhaar:</strong> {member.aadhaar}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Address:</strong> {member.address}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>District:</strong> {member.district}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Date of Birth (DOB):</strong> {member.dob}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Email:</strong> {member.email}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Joining Date:</strong> {member.joiningDate}
-                  </Card.Text>
-                </Card.Body>
-              </ComponentToImage>
+
+              <Card.Body>
+                <Card.Text>
+                  <strong>Name:</strong> {member.name}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Phone Number:</strong> {member.phoneNumber}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Alternate Phone Number:</strong>{" "}
+                  {member.alternatePhoneNumber}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Aadhaar:</strong> {member.aadhaar}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Address:</strong> {member.address}
+                </Card.Text>
+                <Card.Text>
+                  <strong>District:</strong> {member.district}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Date of Birth (DOB):</strong> {formatDate(member.dob)}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Email:</strong> {member.email}
+                </Card.Text>
+                <Card.Text>
+                  <strong>Joining Date:</strong>{" "}
+                  {formatDate(member.joiningDate)}
+                </Card.Text>
+              </Card.Body>
+
               <Card.Footer>
                 <button onClick={() => handleShowModal(member)}>
                   Update Member

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toggleValue } from "../../store/donationSlice";
+import Toaster from "../util/Toaster";
+import { toast } from "react-toastify";
 
 const DonationForm = () => {
   const [searchNumber, setSearchNumber] = useState("");
@@ -47,11 +49,11 @@ const DonationForm = () => {
     setSearchNumber(value);
 
     // Filter the suggestions based on both phoneNumber and alternatePhoneNumber
-    const filteredSuggestions = data.filter(
-      (dataItem) =>
-        dataItem.phoneNumber.includes(value) ||
-        dataItem.alternatePhoneNumber.includes(value)
-    );
+    // const filteredSuggestions = data.filter(
+    //   (dataItem) =>
+    //     dataItem.phoneNumber.includes(value) ||
+    //     dataItem.alternatePhoneNumber.includes(value)
+    // );
 
     // Get unique phone number labels and set suggestions accordingly
     const uniquePhoneNumbers = getUniquePhoneNumbers();
@@ -113,23 +115,26 @@ const DonationForm = () => {
       const decodedToken = parseJwt(token);
       const currentUserId = decodedToken._id;
 
-      // Find the member based on the provided phone number to get the memberId
+      // // Find the member based on the provided phone number to get the memberId
       const member = data.find(
         (dataItem) =>
           dataItem.phoneNumber === searchNumber ||
           dataItem.alternatePhoneNumber === searchNumber
       );
 
-      if (!member) {
-        console.log("Member not found.");
-        return;
-      }
+      // if (!member) {
+      //   toast.warn("Member not found.");
+      //   return;
+      // }
 
       // Here, you can send the data to your Express API using axios.post
       // Include the userId along with other donation data in the request body
       const requestData = {
         userId: currentUserId,
-        memberId: member._id, // Include the memberId obtained from the member data
+        memberId:
+          name && donationType && searchNumber && amount && selectedDate
+            ? member._id
+            : "", // Include the memberId obtained from the member data
         phoneNumber: searchNumber,
         name,
         donationType,
@@ -154,6 +159,7 @@ const DonationForm = () => {
         })
         .catch((error) => {
           console.error("Error sending donation data:", error);
+          toast.warn(error.response.data.message);
         });
     } else {
       console.log("User not logged in. Unable to submit donation.");
@@ -229,9 +235,10 @@ const DonationForm = () => {
         onChange={(e) => setDonationType(e.target.value)}
       >
         <option value="">Select Donation Type</option>
-        <option value="Type 1">Type 1</option>
-        <option value="Type 2">Type 2</option>
-        <option value="Type 3">Type 3</option>
+        <option value="Anna Dhanam">Anna Dhanam</option>
+        <option value="Nithya Kattalai">Nithya Kattalai</option>
+        <option value="Special Donation">Special Donation</option>
+        <option value="Mangalya Donation<">Mangalya Donation</option>
         {/* Add more options if needed */}
       </select>
       <input
@@ -241,6 +248,7 @@ const DonationForm = () => {
         placeholder="Enter amount"
       />
       <button onClick={handleSubmit}>Submit</button>
+      <Toaster />
     </div>
   );
 };
