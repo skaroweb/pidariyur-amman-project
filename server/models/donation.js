@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const Counter = require("./counters.model"); // Import the Counter model
+const DonationCounter = require("./donationCounter.model");
 
 const donationSchema = new mongoose.Schema(
   {
@@ -14,9 +14,13 @@ const donationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    donarManualId: {
+      type: String,
+      unique: true,
+    },
     donationId: { type: String, unique: true },
     // receiptNo: { type: String },
-    phoneNumber: { type: String, required: true },
+    // phoneNumber: { type: String, required: true },
     name: { type: String, required: true },
     donationType: { type: String, required: true },
     amount: { type: String, required: true },
@@ -33,7 +37,7 @@ const donationSchema = new mongoose.Schema(
 donationSchema.pre("save", async function (next) {
   const doc = this;
   try {
-    const counter = await Counter.findOneAndUpdate(
+    const counter = await DonationCounter.findOneAndUpdate(
       { _id: "donationId" },
       { $inc: { seq: 1 } },
       { new: true, upsert: true }
@@ -51,10 +55,11 @@ donationSchema.pre("save", async function (next) {
 
 const validate = (data) => {
   const schema = Joi.object({
+    name: Joi.string().required().label("name"),
     selectedDate: Joi.date().required().label("date"),
-    phoneNumber: Joi.string().required().label("phoneNumber"),
+    // phoneNumber: Joi.string().required().label("phoneNumber"),
     donationType: Joi.string().required().label("donationType"),
-    amount: Joi.string().required().label("amount"),
+    amount: Joi.number().positive().required().label("amount"),
   }).unknown();
   return schema.validate(data);
 };

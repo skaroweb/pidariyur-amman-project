@@ -3,10 +3,14 @@ import axios from "axios";
 import { Card, Col, Row } from "react-bootstrap"; // Import Bootstrap card and grid components
 import UpdateMemberModal from "./UpdateMemberModal"; // Import the modal component
 import DeleteMemberModal from "./DeleteMemberModal"; // Import the modal component
+import { useSelector, useDispatch } from "react-redux";
+import { fetchMemberData } from "../../store/memberSlice";
 
 const List = () => {
-  const [memberData, setMemberData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const isToggled = useSelector((state) => state.member.isToggled);
+  const memberData = useSelector((state) => state.member.data);
+  // const [memberData, setMemberData] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -14,6 +18,7 @@ const List = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteMember, setDeleteMember] = useState(null);
+  const dispatch = useDispatch();
 
   const handleShowModal = (member) => {
     setSelectedMember(member);
@@ -64,7 +69,8 @@ const List = () => {
         handleHideModal();
 
         // Refresh the member list after deletion
-        fetchMemberList();
+        // fetchMemberList();
+        dispatch(fetchMemberData());
       })
       .catch((error) => {
         // Handle errors, if any
@@ -98,7 +104,8 @@ const List = () => {
         handleHideDeleteModal();
 
         // Refresh the member list after deletion
-        fetchMemberList();
+        // fetchMemberList();
+        dispatch(fetchMemberData());
       })
       .catch((error) => {
         // Handle errors, if any
@@ -106,23 +113,27 @@ const List = () => {
       });
   };
 
-  const fetchMemberList = () => {
-    // Fetch the member list from the server
-    axios
-      .get(`${serverURL}/api/member`)
-      .then((response) => {
-        setMemberData(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching member list:", error);
-        setLoading(false);
-      });
-  };
+  // const fetchMemberList = () => {
+  //   // Fetch the member list from the server
+  //   axios
+  //     .get(`${serverURL}/api/member`)
+  //     .then((response) => {
+  //       setMemberData(response.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching member list:", error);
+  //       setLoading(false);
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   fetchMemberList();
+  // }, []);
 
   useEffect(() => {
-    fetchMemberList();
-  }, []);
+    dispatch(fetchMemberData());
+  }, [dispatch, isToggled]);
 
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -135,10 +146,6 @@ const List = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
@@ -156,6 +163,9 @@ const List = () => {
               {/* Card body */}
 
               <Card.Body>
+                <Card.Text>
+                  <strong>Member Id:</strong> {member.memberId}
+                </Card.Text>
                 <Card.Text>
                   <strong>Name:</strong> {member.name}
                 </Card.Text>
@@ -182,8 +192,7 @@ const List = () => {
                   <strong>Email:</strong> {member.email}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Joining Date:</strong>{" "}
-                  {formatDate(member.joiningDate)}
+                  <strong>Joined Date:</strong> {formatDate(member.joiningDate)}
                 </Card.Text>
               </Card.Body>
 
