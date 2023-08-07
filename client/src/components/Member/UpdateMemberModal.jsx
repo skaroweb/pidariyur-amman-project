@@ -102,7 +102,7 @@ const UpdateMemberModal = ({ member, memberData, show, onHide, onUpdate }) => {
           />
         </div>
         <div>
-          <label>Joining Date:</label>
+          <label>Joined Date:</label>
           <input
             type="date"
             name="joiningDate"

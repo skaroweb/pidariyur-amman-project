@@ -10,16 +10,46 @@ router.post("/", async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
+    // const { phoneNumber, alternatePhoneNumber } = req.body;
+
+    // // Check if the phone number already exists in the database
+    // const existingMember = await Member.findOne({
+    //   $or: [{ phoneNumber }, { alternatePhoneNumber }],
+    // });
+    // // console.log(existingMember);
+    // if (existingMember) {
+    //   return res.status(400).send({ message: "Phone number already exists." });
+    // }
+
+    const { phoneNumber, alternatePhoneNumber } = req.body;
+
+    // Check if the phone number already exists in the database
+    let query = {
+      phoneNumber: phoneNumber,
+    };
+
+    if (alternatePhoneNumber && alternatePhoneNumber.trim() !== "") {
+      query["$or"] = [
+        { phoneNumber: phoneNumber },
+        { alternatePhoneNumber: phoneNumber },
+      ];
+    }
+
+    const existingMember = await Member.findOne(query);
+
+    if (existingMember) {
+      return res.status(400).send({ message: "Phone number already exists." });
+    }
+
     const existingUsers = await Member.find({});
     const memberCount = existingUsers.length + 1;
-    const formattedMemberId = String(memberCount).padStart(4, "0");
 
     const newMember = new Member({
-      memberId: formattedMemberId,
+      // memberId: formattedMemberId,
       ...req.body,
     });
     await newMember.save();
-    // console.log(newMember);
+    //console.log(newMember);
     res.status(201).json(newMember); // Update 'newUser' to 'newMember' here
   } catch (err) {
     console.error("Error saving new member:", err);

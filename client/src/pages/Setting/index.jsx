@@ -29,6 +29,7 @@ const Setting = () => {
 
   return (
     <div>
+      <h2>Title of the page</h2>
       <input
         type="text"
         value={newTitle}

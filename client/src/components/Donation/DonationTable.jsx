@@ -60,12 +60,11 @@ const DonationTable = () => {
             <th className="border-0">Donation date</th>
             <th className="border-0">Receipt no</th>
             <th className="border-0">Donor Name</th>
-            <th className="border-0">Phone Number</th>
+            {/* <th className="border-0">Phone Number</th> */}
             <th className="border-0">Donation Type</th>
             <th className="border-0">Amount</th>
 
-            <th className="border-0">Created At</th>
-            <th className="border-0">Action</th>
+            <th className="border-0 text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -78,42 +77,26 @@ const DonationTable = () => {
                   day: "numeric",
                 })}
               </td>
-
               <td className="border-0">{donation.donationId}</td>
               <td className="border-0">{donation.name}</td>
-              <td className="border-0">{donation.phoneNumber}</td>
+              {/* <td className="border-0">{donation.phoneNumber}</td> */}
               <td className="border-0">{donation.donationType}</td>
               <td className="border-0">{donation.amount}</td>
-              <td className="border-0">
-                {new Date(donation.createdAt).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
               <td>
-                <Dropdown as={ButtonGroup} className="">
-                  <Dropdown.Toggle split variant="link">
-                    <i
-                      className="fa fa-ellipsis-h"
-                      aria-hidden="true"
-                      style={{ color: "#000" }}
-                    ></i>
-                  </Dropdown.Toggle>
+                <div className="d-flex justify-content-evenly">
+                  <div>
+                    <Link to={`/invoice/${donation._id}`}>
+                      <i className="fa fa-eye" aria-hidden="true"></i>
+                    </Link>
+                  </div>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to={`/invoice/${donation._id}`}>
-                      View
-                    </Dropdown.Item>
-
-                    <Dropdown.Item onClick={() => handleUpdate(donation)}>
-                      Update
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleDelete(donation)}>
-                      Delete
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                  <div onClick={() => handleUpdate(donation)}>
+                    <i className="fa fa-edit" aria-hidden="true"></i>
+                  </div>
+                  <div onClick={() => handleDelete(donation)}>
+                    <i className="fa fa-trash" aria-hidden="true"></i>
+                  </div>
+                </div>
               </td>
             </tr>
           ))}

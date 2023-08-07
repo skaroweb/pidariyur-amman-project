@@ -1,14 +1,14 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
-
-import Main from "./pages/Main";
-import Signup from "./pages/Singup";
+import Dashboard from "./pages/Dashboard";
+import Donation from "./pages/Donation";
+import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Report from "./pages/Report";
 import Members from "./pages/Members";
-import MemberList from "./pages/MemberList";
 import Setting from "./pages/Setting";
-import InvoicePage from "./pages/Main/InvoicePage";
+import InvoicePage from "./pages/Donation/InvoicePage";
+import NotFound from "./pages/404";
 
 function App() {
   // State to track the user's authentication status
@@ -17,15 +17,16 @@ function App() {
 
   return (
     <Routes>
+      <Route path="*" element={<NotFound />} />
       {/* Dashboard */}
       {user ? (
         <Route path="/" element={<DashboardLayout />}>
-          <Route index exact element={<Main />} />
+          <Route index exact element={<Dashboard />} />
+          <Route path="/donation" exact element={<Donation />} />
           {/* Route to the InvoicePage component */}
-          <Route path="/invoice/:invoiceId" element={<InvoicePage />} />
+          <Route path="/invoice/:id" element={<InvoicePage />} />
           <Route path="/report" exact element={<Report />} />
           <Route path="/members" exact element={<Members />} />
-          <Route path="/members-list" exact element={<MemberList />} />
           <Route path="/setting" exact element={<Setting />} />
         </Route>
       ) : (
@@ -35,6 +36,7 @@ function App() {
       {user && <Route path="/login" element={<Navigate to="/" />} />}
       <Route path="/signup" exact element={<Signup />} />
       <Route path="/login" exact element={<Login />} />
+      {/* Define the 404 page route */}
     </Routes>
   );
 }

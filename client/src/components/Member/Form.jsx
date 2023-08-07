@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { toggleValue } from "../../store/memberSlice";
 import Toaster from "../util/Toaster";
 import { toast } from "react-toastify";
+import styles from "./styles.module.css";
 
 const FormComponent = () => {
   const serverURL = process.env.REACT_APP_SERVER_URL;
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -12,9 +16,9 @@ const FormComponent = () => {
     aadhaar: "",
     address: "",
     district: "",
-    dob: "",
+    dob: "", // Set the date fields to empty initially
     email: "",
-    joiningDate: "",
+    joiningDate: "", // Set the date fields to empty initially
   });
 
   const handleChange = (e) => {
@@ -28,6 +32,7 @@ const FormComponent = () => {
       // Send a POST request to your Express backend with the form data
       await axios.post(`${serverURL}/api/member/`, formData);
       console.log("Form data sent successfully!");
+      dispatch(toggleValue());
       // Reset the form fields after successful submission
       setFormData({
         name: "",
@@ -36,9 +41,9 @@ const FormComponent = () => {
         aadhaar: "",
         address: "",
         district: "",
-        dob: "",
+        dob: "", // Reset the date fields to empty
         email: "",
-        joiningDate: "",
+        joiningDate: "", // Reset the date fields to empty
       });
     } catch (error) {
       //setError(error.response.data.message);
@@ -57,6 +62,7 @@ const FormComponent = () => {
             value={formData.name}
             onChange={handleChange}
           />
+          <span className={styles.error}>* </span>
         </div>
         <div>
           <label htmlFor="phoneNumber">Phone Number:</label>
@@ -67,6 +73,7 @@ const FormComponent = () => {
             value={formData.phoneNumber}
             onChange={handleChange}
           />
+          <span className={styles.error}>* </span>
         </div>
         <div>
           <label htmlFor="alternatePhoneNumber">Alternate Phone Number:</label>
@@ -96,6 +103,7 @@ const FormComponent = () => {
             value={formData.address}
             onChange={handleChange}
           />
+          <span className={styles.error}>* </span>
         </div>
         <div>
           <label htmlFor="district">District:</label>
@@ -106,6 +114,7 @@ const FormComponent = () => {
             value={formData.district}
             onChange={handleChange}
           />
+          <span className={styles.error}>* </span>
         </div>
         <div>
           <label htmlFor="dob">Date of Birth:</label>
@@ -115,6 +124,7 @@ const FormComponent = () => {
             name="dob"
             value={formData.dob}
             onChange={handleChange}
+            defaultValue={""} // Set the defaultValue to empty
           />
         </div>
         <div>
@@ -128,13 +138,14 @@ const FormComponent = () => {
           />
         </div>
         <div>
-          <label htmlFor="joiningDate">Joining Date:</label>
+          <label htmlFor="joiningDate">Joined Date:</label>
           <input
             type="date"
             id="joiningDate"
             name="joiningDate"
             value={formData.joiningDate}
             onChange={handleChange}
+            defaultValue={""} // Set the defaultValue to empty
           />
         </div>
         <button type="submit">Submit</button>
