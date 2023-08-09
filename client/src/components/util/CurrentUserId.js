@@ -36,7 +36,6 @@ const CurrentUserId = () => {
     }
   }, []);
 
-  console.log(isAdmin);
   // Function to parse the JWT token
   const parseJwt = (token) => {
     try {
@@ -48,7 +47,7 @@ const CurrentUserId = () => {
     }
   };
 
-  return <div>{isAdmin}</div>;
+  return isAdmin;
 };
 
 export default CurrentUserId;

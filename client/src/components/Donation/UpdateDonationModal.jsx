@@ -8,10 +8,16 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
   const dispatch = useDispatch();
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
+  // Convert the date to the "YYYY-MM-DD" format before setting it in the state
+  const initialSelectedDate = donationData.selectedDate
+    ? new Date(donationData.selectedDate).toISOString().split("T")[0]
+    : "";
+
   // Initialize the state with the donationData prop
   const [updateData, setUpdateData] = useState({
     donationType: donationData.donationType,
     amount: donationData.amount,
+    selectedDate: initialSelectedDate, // Pre-fill the date field with the specific date
   });
 
   const handleInputChange = (event) => {
@@ -46,8 +52,9 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
     setUpdateData({
       donationType: donationData.donationType,
       amount: donationData.amount,
+      selectedDate: initialSelectedDate, // Update the selected date in the state
     });
-  }, [donationData]);
+  }, [donationData, initialSelectedDate]);
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -56,7 +63,17 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleFormSubmit}>
-          <Form.Group controlId="formDonationType">
+          {/* Add the date input field */}
+          <Form.Group className="mb-1" controlId="formSelectedDate">
+            <Form.Label>Donation Date</Form.Label>
+            <Form.Control
+              type="date"
+              name="selectedDate"
+              value={updateData.selectedDate}
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Form.Group className="mb-1" controlId="formDonationType">
             <Form.Label>Donation Type</Form.Label>
             <Form.Control
               as="select"
@@ -65,15 +82,15 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
               onChange={handleInputChange}
             >
               <option value="">Select Donation Type</option>
-              <option value="Anna Dhanam">Anna Dhanam</option>
-              <option value="Nithya Kattalai">Nithya Kattalai</option>
-              <option value="Special Donation">Special Donation</option>
-              <option value="Mangalya Donation<">Mangalya Donation</option>
+              <option value="AD">AD</option>
+              <option value="NK">NK</option>
+              <option value="SD">SD</option>
+              <option value="MD">MD</option>
               {/* Add more options if needed */}
             </Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="formAmount">
+          <Form.Group className="mb-2" controlId="formAmount">
             <Form.Label>Amount</Form.Label>
             <Form.Control
               type="text"

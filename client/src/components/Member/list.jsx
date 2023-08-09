@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { Card, Col, Row } from "react-bootstrap"; // Import Bootstrap card and grid components
+import { Table } from "react-bootstrap"; // Import Bootstrap card and grid components
 import UpdateMemberModal from "./UpdateMemberModal"; // Import the modal component
 import DeleteMemberModal from "./DeleteMemberModal"; // Import the modal component
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +20,51 @@ const List = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteMember, setDeleteMember] = useState(null);
   const dispatch = useDispatch();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // State to track the user's authentication status
+
+  useEffect(() => {
+    // Retrieve the JWT token from localStorage
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Decode the JWT token to get user information (e.g., user ID)
+      const decodedToken = parseJwt(token);
+      const currentUserId = decodedToken._id;
+
+      // Make an API request to get user data
+      axios
+        .get(`${serverURL}/api/user/`)
+        .then((response) => {
+          // Find the user with the currentUserId from the fetched data
+
+          const currentUser = response.data.find(
+            (user) => user._id === currentUserId
+          );
+
+          if (currentUser) {
+            setIsAdmin(currentUser.isAdmin);
+          } else {
+            console.log("User not found in fetched data.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, []);
+
+  const parseJwt = (token) => {
+    try {
+      const base64Payload = token.split(".")[1];
+      const payload = atob(base64Payload);
+      return JSON.parse(payload);
+    } catch (error) {
+      return null;
+    }
+  };
 
   const handleShowModal = (member) => {
     setSelectedMember(member);
@@ -151,16 +197,13 @@ const List = () => {
     <div>
       <h2>Member List</h2>
 
-      <Row>
-        {/* Loop through the memberData array */}
+      {/* <Row>
         {memberData.map((member) => (
           <Col key={member._id} lg={4} md={6} sm={12} className="mb-4">
             <Card>
-              {/* Card header */}
               <Card.Header>
                 <Card.Title>{member.name}</Card.Title>
               </Card.Header>
-              {/* Card body */}
 
               <Card.Body>
                 <Card.Text>
@@ -195,20 +238,79 @@ const List = () => {
                   <strong>Joined Date:</strong> {formatDate(member.joiningDate)}
                 </Card.Text>
               </Card.Body>
-
-              <Card.Footer>
-                <button onClick={() => handleShowModal(member)}>
-                  Update Member
-                </button>
-                <button onClick={() => handleShowDeleteModal(member)}>
-                  Delete Member
-                </button>
-              </Card.Footer>
+              {isAdmin && (
+                <Card.Footer>
+                  <button onClick={() => handleShowModal(member)}>
+                    Update Member
+                  </button>
+                  <button onClick={() => handleShowDeleteModal(member)}>
+                    Delete Member
+                  </button>
+                </Card.Footer>
+              )}
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row> */}
+      <div className="card border-0 shadow mb-4">
+        <div className="card-body">
+          <div className="table-responsive">
+            <Table responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th className="border-0">Name</th>
+                  <th className="border-0">Member Id</th>
+                  <th className="border-0">Phone Number</th>
+                  <th className="border-0" style={{ width: "25%" }}>
+                    Address
+                  </th>
 
+                  <th>District</th>
+                  {isAdmin && <th className="text-center border-0">Actions</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {memberData.map((member) => (
+                  <tr style={{ verticalAlign: "middle" }} key={member._id}>
+                    <td>{member.name}</td>
+                    <td>{member.memberId}</td>
+                    <td>{member.phoneNumber}</td>
+                    <td>{member.address}</td>
+                    <td>{member.district}</td>
+                    {isAdmin && (
+                      <td>
+                        <div className="d-flex justify-content-evenly">
+                          <div>
+                            <Link
+                              style={{ color: "#212529" }}
+                              to={`/members/${member._id}`}
+                            >
+                              <i className="fa fa-eye" aria-hidden="true"></i>
+                            </Link>
+                          </div>
+
+                          <div
+                            className="cursor"
+                            onClick={() => handleShowModal(member)}
+                          >
+                            <i className="fa fa-edit" aria-hidden="true"></i>
+                          </div>
+                          <div
+                            className="cursor"
+                            onClick={() => handleShowDeleteModal(member)}
+                          >
+                            <i className="fa fa-trash" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </div>
+      </div>
       {selectedMember && (
         <UpdateMemberModal
           member={selectedMember}

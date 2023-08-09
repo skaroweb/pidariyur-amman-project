@@ -35,8 +35,6 @@ const DonationYearChart = () => {
       });
   }, [serverURL]);
 
-  console.log(chartData);
-
   const getYearlyDonations = (donations) => {
     // Group donations by year
     const yearlyDonations = {};
