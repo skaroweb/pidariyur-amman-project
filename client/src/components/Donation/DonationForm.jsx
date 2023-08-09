@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { toggleValue } from "../../store/donationSlice";
 import Toaster from "../util/Toaster";
 import { toast } from "react-toastify";
+import { Form, Button, Col, Row } from "react-bootstrap";
+import styles from "./DonationForm.module.css";
 
 const DonationForm = () => {
   const [searchNumber, setSearchNumber] = useState("");
@@ -224,8 +226,8 @@ const DonationForm = () => {
   };
 
   return (
-    <div>
-      <input
+    <div className={styles.Donate_form}>
+      {/* <input
         type="number"
         value={(memberId?.seq + 1).toString().padStart(4, "0")}
         disabled
@@ -235,8 +237,6 @@ const DonationForm = () => {
         type={selectedFromSuggestions ? "text" : "number"}
         value={searchNumber}
         onChange={handleSearchChange}
-        // onKeyPress={handleKeyPress}
-        // onBlur={handleSearchBlur}
         placeholder="search Name by phone num"
       />
       {suggestions.length > 0 ? (
@@ -255,17 +255,16 @@ const DonationForm = () => {
           {searchNumber.trim() !== "" && !selectedFromSuggestions && "No Found"}
         </div>
       )}
-      {/* {showName && name !== "Not Found" && <p>Name: {name}</p>} */}
+
       <select
         value={donationType}
         onChange={(e) => setDonationType(e.target.value)}
       >
         <option value="">Select Donation Type</option>
-        <option value="Anna Dhanam">Anna Dhanam</option>
-        <option value="Nithya Kattalai">Nithya Kattalai</option>
-        <option value="Special Donation">Special Donation</option>
-        <option value="Mangalya Donation">Mangalya Donation</option>
-        {/* Add more options if needed */}
+        <option value="AD">AD</option>
+        <option value="NK">NK</option>
+        <option value="SD">SD</option>
+        <option value="MD">MD</option>
       </select>
       <input
         type="number"
@@ -273,7 +272,101 @@ const DonationForm = () => {
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Enter amount"
       />
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleSubmit}>Submit</button> */}
+
+      <Form>
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={4}>
+            Receipt No:
+          </Form.Label>
+          <Col sm={8}>
+            <Form.Control
+              type="number"
+              value={(memberId?.seq + 1).toString().padStart(4, "0")}
+              disabled
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={4}>
+            Donate Date:
+          </Form.Label>
+          <Col sm={8}>
+            <Form.Control
+              type="date"
+              value={selectedDate}
+              onChange={handleDateChange}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={4}>
+            Search phoneNumber:
+          </Form.Label>
+          <Col sm={8} className={styles.auto_complete_control}>
+            <Form.Control
+              type={selectedFromSuggestions ? "text" : "number"}
+              value={searchNumber}
+              onChange={handleSearchChange}
+              placeholder="search Name by phone num"
+            />
+            {suggestions.length > 0 ? (
+              <div className={styles.auto_complete}>
+                {suggestions.map((item) => (
+                  <div
+                    key={item.memberId}
+                    onClick={() => handleSelectSuggestion(item.name)}
+                  >
+                    {item.name} - {item.memberId}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {searchNumber.trim() !== "" &&
+                  !selectedFromSuggestions &&
+                  "No Found"}
+              </div>
+            )}
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={4}>
+            Donation Type:
+          </Form.Label>
+          <Col sm={8}>
+            <Form.Select
+              value={donationType}
+              onChange={(e) => setDonationType(e.target.value)}
+            >
+              <option value="">Select Donation Type</option>
+              <option value="AD">AD</option>
+              <option value="NK">NK</option>
+              <option value="SD">SD</option>
+              <option value="MD">MD</option>
+            </Form.Select>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form.Label column sm={4}>
+            Amount:
+          </Form.Label>
+          <Col sm={8}>
+            <Form.Control
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Enter amount"
+            />
+          </Col>
+        </Form.Group>
+
+        <Button variant="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
+      </Form>
       <Toaster />
     </div>
   );

@@ -1,6 +1,4 @@
 require("dotenv").config();
-const axios = require("axios");
-const cheerio = require("cheerio");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -20,7 +18,7 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/setting", settingRoutes);

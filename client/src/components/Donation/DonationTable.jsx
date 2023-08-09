@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 ///import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDonationData } from "../../store/donationSlice";
-import { Dropdown, ButtonGroup, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Table } from "react-bootstrap";
+import axios from "axios";
 import UpdateDonationModal from "./UpdateDonationModal";
 import DeleteConfirmationModal from "./DeleteDonationModal";
 
@@ -15,6 +15,51 @@ const DonationTable = () => {
   const [selectedDonation, setSelectedDonation] = useState(null);
   // console.log("isToggled:", isToggled);
   // console.log("donationData:", donationData);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const serverURL = process.env.REACT_APP_SERVER_URL;
+  // State to track the user's authentication status
+
+  useEffect(() => {
+    // Retrieve the JWT token from localStorage
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Decode the JWT token to get user information (e.g., user ID)
+      const decodedToken = parseJwt(token);
+      const currentUserId = decodedToken._id;
+
+      // Make an API request to get user data
+      axios
+        .get(`${serverURL}/api/user/`)
+        .then((response) => {
+          // Find the user with the currentUserId from the fetched data
+
+          const currentUser = response.data.find(
+            (user) => user._id === currentUserId
+          );
+
+          if (currentUser) {
+            setIsAdmin(currentUser.isAdmin);
+          } else {
+            console.log("User not found in fetched data.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, []);
+
+  const parseJwt = (token) => {
+    try {
+      const base64Payload = token.split(".")[1];
+      const payload = atob(base64Payload);
+      return JSON.parse(payload);
+    } catch (error) {
+      return null;
+    }
+  };
 
   const dispatch = useDispatch();
 
@@ -54,54 +99,71 @@ const DonationTable = () => {
   return (
     <div>
       <h2>Donation Data:</h2>
-      <Table>
-        <thead className="thead-light">
-          <tr>
-            <th className="border-0">Donation date</th>
-            <th className="border-0">Receipt no</th>
-            <th className="border-0">Donor Name</th>
-            {/* <th className="border-0">Phone Number</th> */}
-            <th className="border-0">Donation Type</th>
-            <th className="border-0">Amount</th>
+      <div className="card border-0 shadow mb-4">
+        <div className="card-body">
+          <div className="table-responsive">
+            <Table responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th className="border-0">Donation date</th>
+                  <th className="border-0">Receipt no</th>
+                  <th className="border-0">Donor Name</th>
+                  {/* <th className="border-0">Phone Number</th> */}
+                  <th className="border-0">Donation Type</th>
+                  <th className="border-0">Amount</th>
 
-            <th className="border-0 text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {donationData.map((donation) => (
-            <tr key={donation._id}>
-              <td className="border-0">
-                {new Date(donation.selectedDate).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
-              <td className="border-0">{donation.donationId}</td>
-              <td className="border-0">{donation.name}</td>
-              {/* <td className="border-0">{donation.phoneNumber}</td> */}
-              <td className="border-0">{donation.donationType}</td>
-              <td className="border-0">{donation.amount}</td>
-              <td>
-                <div className="d-flex justify-content-evenly">
-                  <div>
+                  {isAdmin && <th className="border-0 text-center">Action</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {donationData.map((donation) => (
+                  <tr key={donation._id}>
+                    <td className="">
+                      {new Date(donation.selectedDate).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="">{donation.donationId}</td>
+                    <td className="">{donation.name}</td>
+                    {/* <td className="border-0">{donation.phoneNumber}</td> */}
+                    <td className="">{donation.donationType}</td>
+                    <td className="">{donation.amount}</td>
+                    {isAdmin && (
+                      <td>
+                        <div className="d-flex justify-content-evenly">
+                          {/* <div>
                     <Link to={`/invoice/${donation._id}`}>
                       <i className="fa fa-eye" aria-hidden="true"></i>
                     </Link>
-                  </div>
+                  </div> */}
 
-                  <div onClick={() => handleUpdate(donation)}>
-                    <i className="fa fa-edit" aria-hidden="true"></i>
-                  </div>
-                  <div onClick={() => handleDelete(donation)}>
-                    <i className="fa fa-trash" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                          <>
+                            <div
+                              className="cursor"
+                              onClick={() => handleUpdate(donation)}
+                            >
+                              <i className="fa fa-edit" aria-hidden="true"></i>
+                            </div>
+                            <div
+                              className="cursor"
+                              onClick={() => handleDelete(donation)}
+                            >
+                              <i className="fa fa-trash" aria-hidden="true"></i>
+                            </div>
+                          </>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </div>
+      </div>
+
       {/* Render the UpdateDonationModal component */}
       {selectedDonation && (
         <UpdateDonationModal

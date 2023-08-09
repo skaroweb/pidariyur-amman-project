@@ -10,17 +10,6 @@ router.post("/", async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    // const { phoneNumber, alternatePhoneNumber } = req.body;
-
-    // // Check if the phone number already exists in the database
-    // const existingMember = await Member.findOne({
-    //   $or: [{ phoneNumber }, { alternatePhoneNumber }],
-    // });
-    // // console.log(existingMember);
-    // if (existingMember) {
-    //   return res.status(400).send({ message: "Phone number already exists." });
-    // }
-
     const { phoneNumber, alternatePhoneNumber } = req.body;
 
     // Check if the phone number already exists in the database
@@ -42,7 +31,6 @@ router.post("/", async (req, res) => {
     }
 
     const existingUsers = await Member.find({});
-    const memberCount = existingUsers.length + 1;
 
     const newMember = new Member({
       // memberId: formattedMemberId,
@@ -69,13 +57,72 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Route to get specific donation details by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const memberId = req.params.id;
+    const member = await Member.findById(memberId);
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    return res.status(200).json(member);
+  } catch (error) {
+    console.error("Error fetching member details:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 //UPDATE a member by memberId:
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const { error } = validate(req.body);
+
+//     if (error)
+//       return res.status(400).send({ message: error.details[0].message });
+
+//     const updatedMember = await Member.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     );
+
+//     if (updatedMember) {
+//       res.json(updatedMember);
+//     } else {
+//       res.status(404).json({ message: "Member not found." });
+//     }
+//   } catch (err) {
+//     console.error("Error updating member:", err);
+//     res.status(500).json({ error: "Failed to update member." });
+//   }
+// });
+
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validate(req.body);
 
-    if (error)
+    if (error) {
       return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const { phoneNumber, alternatePhoneNumber } = req.body;
+
+    // Check if the phone number already exists in the database
+    let query = {
+      $or: [
+        { phoneNumber: phoneNumber },
+        { phoneNumber: alternatePhoneNumber },
+      ],
+      _id: { $ne: req.params.id }, // Exclude the current document being updated
+    };
+
+    const existingMember = await Member.findOne(query);
+
+    if (existingMember) {
+      return res.status(400).send({ message: "Phone number already exists." });
+    }
 
     const updatedMember = await Member.findByIdAndUpdate(
       req.params.id,

@@ -5,7 +5,11 @@ import styles from "./styles.module.css";
 const Title = () => {
   const { title } = useTitleContext();
 
-  return <h1 className={styles.heading}>{title}</h1>;
+  return (
+    <div className="title">
+      <h1 className={styles.heading}>{title}</h1>
+    </div>
+  );
 };
 
 export default Title;

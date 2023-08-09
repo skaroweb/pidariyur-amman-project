@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import styles from "../Report/Pagination.module.css";
+import "./DonationList.css";
 import ExcelReport from "../util/ExcelReport";
 
 const DonationList = () => {
@@ -171,117 +172,165 @@ const DonationList = () => {
 
   return (
     <div>
-      <h2>Donations Table</h2>
-      <div className="filter-container">
-        <select onChange={handleTypeChange} value={selectedType}>
-          <option value="All">All</option>
-          <option value="Anna Dhanam">Anna Dhanam</option>
-          <option value="Nithya Kattalai">Nithya Kattalai</option>
-          <option value="Special Donation">Special Donation</option>
-          <option value="Mangalya Donation">Mangalya Donation</option>
-        </select>
+      <h2>Donations Filter</h2>
 
-        <div>
-          <input
-            type="number"
-            placeholder="Min Amount"
-            value={minAmount}
-            onChange={(e) => handleAmountChange(e, "min")}
-          />
-          <input
-            type="number"
-            placeholder="Max Amount"
-            value={maxAmount}
-            onChange={(e) => handleAmountChange(e, "max")}
-          />
-        </div>
-        <div>
-          <input
-            type="date"
-            value={fromDate}
-            onChange={handleFromDateChange}
-            placeholder="From Date"
-          />
-          <input
-            type="date"
-            value={toDate}
-            onChange={handleToDateChange}
-            placeholder="To Date"
-          />
-        </div>
-        <input
-          type={isNumberInput ? "number" : "text"}
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search phone number or alternate phone number"
-        />
-        {searchResults ? (
-          <ul>
-            {searchResults.map((member) => (
-              <li
-                key={member._id}
-                onClick={() => handleSelectMember(member._id, member.name)}
-              >
-                {member.name} - {member.memberId}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div>{searchQuery.trim() !== "" && "No Found"}</div>
-        )}
-
-        <button onClick={handleDeselect}>Clear</button>
-      </div>
       <ExcelReport items={filteredData} />
-      <Table>
-        <thead className="thead-light">
-          <tr>
-            <th className="border-0">Receipt no</th>
-            <th className="border-0">Donor Name</th>
-            <th className="border-0">Member Id</th>
-            <th className="border-0">Donation Type</th>
-            <th className="border-0">Amount</th>
-            <th className="border-0">Created At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.map((donation) => (
-            <tr key={donation._id}>
-              <td className="border-0">{donation.donationId}</td>
-              <td className="border-0">{donation.name}</td>
-              <td className="border-0">{donation.donarManualId}</td>
-              <td className="border-0">{donation.donationType}</td>
-              <td className="border-0">{donation.amount}</td>
-              <td className="border-0">
-                {new Date(donation.createdAt).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      {filteredData.length > itemsPerPage && (
-        <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          pageCount={Math.ceil(filteredData.length / itemsPerPage)}
-          onPageChange={handlePageChange}
-          containerClassName={styles.pagination_ul}
-          previousLinkClassName={styles.paginationLink}
-          nextLinkClassName={styles.paginationLink}
-          disabledClassName={styles.paginationDisabled}
-          activeClassName={styles.paginationActive}
-          forcePage={currentPage}
-          pageRangeDisplayed={2}
-          marginPagesDisplayed={1}
-        />
-      )}
 
-      <div className={styles.totalAmount}>
-        Total Amount: {calculateTotalAmount()}
+      <div className="filter-container">
+        <div className="overall_filter">
+          <div className="auto_complete_control">
+            <label>Filter by phone number:</label>
+            <input
+              className="form-control"
+              type={isNumberInput ? "number" : "text"}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search phone number or alternate phone number"
+            />
+            {searchResults ? (
+              <div className="auto_complete">
+                {searchResults.map((member) => (
+                  <div
+                    key={member._id}
+                    onClick={() => handleSelectMember(member._id, member.name)}
+                  >
+                    {member.name} - {member.memberId}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>{searchQuery.trim() !== "" && "No Found"}</div>
+            )}
+          </div>
+
+          <div>
+            <label>Filter by donation type:</label>
+            <select
+              className="d-md-inline form-select"
+              onChange={handleTypeChange}
+              value={selectedType}
+            >
+              <option value="All">All</option>
+              <option value="AD">AD</option>
+              <option value="NK">NK</option>
+              <option value="SD">SD</option>
+              <option value="MD">MD</option>
+            </select>
+          </div>
+          <div>
+            <label>Filter by Min Amount:</label>
+            <input
+              className="form-control"
+              type="number"
+              placeholder="Min Amount"
+              value={minAmount}
+              onChange={(e) => handleAmountChange(e, "min")}
+            />
+          </div>
+          <div>
+            <label>Filter by Max Amount:</label>
+            <input
+              className="form-control"
+              type="number"
+              placeholder="Max Amount"
+              value={maxAmount}
+              onChange={(e) => handleAmountChange(e, "max")}
+            />
+          </div>
+          <div>
+            <label>Filter by from date:</label>
+            <input
+              className="form-control"
+              type="date"
+              value={fromDate}
+              onChange={handleFromDateChange}
+              placeholder="From Date"
+            />
+          </div>
+          <div>
+            <label>Filter by to date:</label>
+            <input
+              className="form-control"
+              type="date"
+              value={toDate}
+              onChange={handleToDateChange}
+              placeholder="To Date"
+            />
+          </div>
+        </div>
+
+        <button
+          className="btn btn-secondary mt-2 mb-2"
+          onClick={handleDeselect}
+        >
+          Clear
+        </button>
+      </div>
+
+      <div className="card border-0 shadow mb-4">
+        <div className="card-body">
+          <div className="table-responsive">
+            <Table responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th className="border-0">Donation Date</th>
+                  <th className="border-0">Receipt no</th>
+                  <th className="border-0">Donor Name</th>
+                  <th className="border-0">Member Id</th>
+                  <th className="border-0">Donation Type</th>
+                  <th className="border-0">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((donation) => (
+                  <tr key={donation._id}>
+                    <td className="border-0">
+                      {new Date(donation.selectedDate).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="border-0">{donation.donationId}</td>
+                    <td className="border-0">{donation.name}</td>
+                    <td className="border-0">{donation.donarManualId}</td>
+                    <td className="border-0">{donation.donationType}</td>
+                    <td className="border-0">{donation.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+          <div className="paginateTotal">
+            <div className="paginate">
+              {filteredData.length > itemsPerPage && (
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+                  onPageChange={handlePageChange}
+                  containerClassName={styles.pagination_ul}
+                  previousLinkClassName={styles.paginationLink}
+                  nextLinkClassName={styles.paginationLink}
+                  disabledClassName={styles.paginationDisabled}
+                  activeClassName={styles.paginationActive}
+                  forcePage={currentPage}
+                  pageRangeDisplayed={2}
+                  marginPagesDisplayed={1}
+                />
+              )}
+            </div>
+
+            <div className="totalAmount">
+              Total Donation Amount:
+              <span>
+                {" "}
+                <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                {calculateTotalAmount().toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
