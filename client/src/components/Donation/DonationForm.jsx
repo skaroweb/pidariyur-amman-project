@@ -368,7 +368,11 @@ const DonationForm = () => {
             </Col>
           </Form.Group>
 
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            className={styles.donation_submit}
+            onClick={handleSubmit}
+          >
             Submit
           </Button>
         </Form>

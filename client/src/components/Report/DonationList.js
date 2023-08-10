@@ -133,6 +133,17 @@ const DonationList = () => {
     return totalAmount;
   };
 
+  const calculateTotalAmountByType = (type) => {
+    const totalAmount = filteredData.reduce((total, donation) => {
+      if (donation.donationType === type) {
+        return total + Number(donation.amount);
+      }
+      return total;
+    }, 0);
+
+    return totalAmount;
+  };
+
   const handleSearchChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
@@ -320,14 +331,55 @@ const DonationList = () => {
                 />
               )}
             </div>
+            <div className="total">
+              <div className="totalAmount">
+                Total Donation Amount:
+                <span>
+                  {" "}
+                  <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                  {calculateTotalAmount().toFixed(2)}
+                </span>
+              </div>
+              <div className="totalamounttypes">
+                <h6> Total Donation Amount (All Types)</h6>
+                <div className="donationTypeGrid">
+                  <div>
+                    AD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("AD").toFixed(2)}
+                    </span>
+                  </div>
 
-            <div className="totalAmount">
-              Total Donation Amount:
-              <span>
-                {" "}
-                <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
-                {calculateTotalAmount().toFixed(2)}
-              </span>
+                  <div>
+                    NK :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("NK").toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div>
+                    SD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("SD").toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div>
+                    MD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("MD").toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

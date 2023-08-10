@@ -24,6 +24,11 @@
 .auto_complete_control {
   position: relative;
 }
+.donation_submit {
+  margin: auto;
+  display: block;
+}
+
 @media (max-width: 768px) {
   .Donate_form {
     width: 100%;
