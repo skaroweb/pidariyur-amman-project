@@ -1,7 +1,9 @@
 // Setting.js
 import React, { useState } from "react";
 import { useTitleContext } from "../../context/TitleContext";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Col } from "react-bootstrap";
+import Toaster from "../../components/util/Toaster";
+import { toast } from "react-toastify";
 
 import axios from "axios";
 
@@ -22,6 +24,7 @@ const Setting = () => {
       .then((response) => {
         // The title is successfully saved, update the context with new title
         setTitle(newTitle);
+        toast.success(`Title changed successfully`);
       })
       .catch((error) => {
         console.error("Error saving title:", error);
@@ -61,6 +64,7 @@ const Setting = () => {
           </Col>
         </div>
       </Form>
+      <Toaster />
     </div>
   );
 };

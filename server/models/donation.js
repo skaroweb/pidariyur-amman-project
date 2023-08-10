@@ -55,7 +55,7 @@ donationSchema.pre("save", async function (next) {
 
 const validate = (data) => {
   const schema = Joi.object({
-    name: Joi.string().required().label("phoneNumber"),
+    name: Joi.string().required().label("name"),
     selectedDate: Joi.date().required().label("date"),
     // phoneNumber: Joi.string().required().label("phoneNumber"),
     donationType: Joi.string().required().label("donationType"),

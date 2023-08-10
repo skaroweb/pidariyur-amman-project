@@ -21,6 +21,7 @@ const DonationList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [selectedMemberId, setSelectedMemberId] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, ascending: true });
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -39,7 +40,7 @@ const DonationList = () => {
     axios
       .get(`${serverURL}/api/donate`)
       .then((response) => {
-        setDonationData(response.data);
+        setDonationData(response.data.reverse());
         setFilteredData(response.data);
         setLoading(false);
       })
@@ -87,6 +88,33 @@ const DonationList = () => {
     donationData,
     selectedMemberId,
   ]);
+
+  // Function to handle sorting when the button is clicked
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.ascending) {
+      direction = "descending";
+    }
+    const sorted = [...filteredData].sort((a, b) => {
+      if (key === "name") {
+        return direction === "ascending"
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      } else if (key === "date") {
+        return direction === "ascending"
+          ? new Date(a.selectedDate) - new Date(b.selectedDate)
+          : new Date(b.selectedDate) - new Date(a.selectedDate);
+      } else if (key === "amount") {
+        return direction === "ascending"
+          ? a.amount - b.amount
+          : b.amount - a.amount;
+      }
+      return 0;
+    });
+
+    setFilteredData(sorted);
+    setSortConfig({ key, ascending: direction === "ascending" });
+  };
 
   // Create a flag to determine whether the input should be "number" or "text"
   const isNumberInput = searchQuery === "" || !isNaN(searchQuery);
@@ -173,7 +201,7 @@ const DonationList = () => {
     return <div>Loading...</div>;
   }
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const offset = currentPage * itemsPerPage;
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
 
@@ -284,31 +312,72 @@ const DonationList = () => {
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Date</th>
-                  <th className="border-0">Receipt no</th>
-                  <th className="border-0">Name</th>
-                  <th className="border-0">Member Id</th>
-                  <th className="border-0">Type</th>
-                  <th className="border-0">Amount</th>
+                  <th className="border-0" style={{ width: "15%" }}>
+                    Date
+                    <span
+                      className="handleSort"
+                      onClick={() => handleSort("date")}
+                    >
+                      <i className="fa fa-sort" aria-hidden="true"></i>
+                    </span>
+                  </th>
+                  <th className="border-0" style={{ width: "15%" }}>
+                    Receipt no
+                  </th>
+                  <th className="border-0" style={{ width: "20%" }}>
+                    Name
+                    <span
+                      className="handleSort"
+                      onClick={() => handleSort("name")}
+                    >
+                      <i className="fa fa-sort" aria-hidden="true"></i>
+                    </span>
+                  </th>
+                  <th className="border-0" style={{ width: "15%" }}>
+                    Member Id
+                  </th>
+                  <th className="border-0" style={{ width: "15%" }}>
+                    Type
+                  </th>
+                  <th className="border-0" style={{ width: "20%" }}>
+                    Amount
+                    <span
+                      className="handleSort"
+                      onClick={() => handleSort("amount")}
+                    >
+                      <i className="fa fa-sort" aria-hidden="true"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {currentData.map((donation) => (
-                  <tr key={donation._id}>
-                    <td className="border-0">
-                      {new Date(donation.selectedDate).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                {filteredData.length > 0 ? (
+                  currentData.map((donation) => (
+                    <tr key={donation._id}>
+                      <td className="border-0">
+                        {new Date(donation.selectedDate).toLocaleString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </td>
+                      <td className="border-0">{donation.donationId}</td>
+                      <td className="border-0">{donation.name}</td>
+                      <td className="border-0">{donation.donarManualId}</td>
+                      <td className="border-0">{donation.donationType}</td>
+                      <td className="border-0">{donation.amount}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="border-0 text-center h5">
+                      Data Not Found
                     </td>
-                    <td className="border-0">{donation.donationId}</td>
-                    <td className="border-0">{donation.name}</td>
-                    <td className="border-0">{donation.donarManualId}</td>
-                    <td className="border-0">{donation.donationType}</td>
-                    <td className="border-0">{donation.amount}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </Table>
           </div>

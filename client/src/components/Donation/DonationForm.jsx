@@ -194,7 +194,7 @@ const DonationForm = () => {
       axios
         .post(`${serverURL}/api/donate/`, requestData)
         .then((response) => {
-          console.log("Donation data sent successfully:", response.data);
+          // console.log("Donation data sent successfully:", response.data);
           // Dispatch the toggleValue action to trigger a re-fetch of donation data
           dispatch(toggleValue());
           fetchData();
@@ -205,6 +205,7 @@ const DonationForm = () => {
           setAmount("");
           setSelectedDate(getFormattedDate(new Date()));
           setShowName(false);
+          toast.success("Donation added successfully");
         })
         .catch((error) => {
           console.error("Error sending donation data:", error);

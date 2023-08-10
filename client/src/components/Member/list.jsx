@@ -6,6 +6,8 @@ import UpdateMemberModal from "./UpdateMemberModal"; // Import the modal compone
 import DeleteMemberModal from "./DeleteMemberModal"; // Import the modal component
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMemberData } from "../../store/memberSlice";
+import ReactPaginate from "react-paginate";
+import styles from "../Report/Pagination.module.css";
 
 const List = () => {
   const isToggled = useSelector((state) => state.member.isToggled);
@@ -20,7 +22,7 @@ const List = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteMember, setDeleteMember] = useState(null);
   const dispatch = useDispatch();
-
+  const [currentPage, setCurrentPage] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
 
   // State to track the user's authentication status
@@ -193,14 +195,24 @@ const List = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const filteredMembers = memberData.filter((member) => {
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    return (
-      member.name.toLowerCase().includes(lowerCaseQuery) ||
-      member.phoneNumber.includes(searchQuery) ||
-      member.alternatePhoneNumber.includes(searchQuery)
-    );
-  });
+  const filteredMembers = memberData
+    .filter((member) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        member.name.toLowerCase().includes(lowerCaseQuery) ||
+        member.phoneNumber.includes(searchQuery) ||
+        member.alternatePhoneNumber.includes(searchQuery)
+      );
+    })
+    .reverse();
+
+  const itemsPerPage = 10;
+  const offset = currentPage * itemsPerPage;
+  const currentData = filteredMembers.slice(offset, offset + itemsPerPage);
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   return (
     <div>
@@ -215,118 +227,103 @@ const List = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </Col>
-
-      {/* <Row>
-        {memberData.map((member) => (
-          <Col key={member._id} lg={4} md={6} sm={12} className="mb-4">
-            <Card>
-              <Card.Header>
-                <Card.Title>{member.name}</Card.Title>
-              </Card.Header>
-
-              <Card.Body>
-                <Card.Text>
-                  <strong>Member Id:</strong> {member.memberId}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Name:</strong> {member.name}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Phone Number:</strong> {member.phoneNumber}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Alternate Phone Number:</strong>{" "}
-                  {member.alternatePhoneNumber}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Aadhaar:</strong> {member.aadhaar}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Address:</strong> {member.address}
-                </Card.Text>
-                <Card.Text>
-                  <strong>District:</strong> {member.district}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Date of Birth (DOB):</strong> {formatDate(member.dob)}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Email:</strong> {member.email}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Joined Date:</strong> {formatDate(member.joiningDate)}
-                </Card.Text>
-              </Card.Body>
-              {isAdmin && (
-                <Card.Footer>
-                  <button onClick={() => handleShowModal(member)}>
-                    Update Member
-                  </button>
-                  <button onClick={() => handleShowDeleteModal(member)}>
-                    Delete Member
-                  </button>
-                </Card.Footer>
-              )}
-            </Card>
-          </Col>
-        ))}
-      </Row> */}
       <div className="card border-0 shadow mb-4">
         <div className="card-body">
           <div className="table-responsive">
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Name</th>
-                  <th className="border-0">Member Id</th>
-                  <th className="border-0">Phone Number</th>
+                  <th className="border-0" style={{ width: "15%" }}>
+                    Name
+                  </th>
+                  <th className="border-0" style={{ width: "13%" }}>
+                    Member Id
+                  </th>
+                  <th className="border-0" style={{ width: "20%" }}>
+                    Phone Number
+                  </th>
                   <th className="border-0" style={{ width: "25%" }}>
                     Address
                   </th>
 
-                  <th>District</th>
-                  {isAdmin && <th className="text-center border-0">Actions</th>}
+                  <th className="border-0" style={{ width: "15%" }}>
+                    District
+                  </th>
+                  {isAdmin && (
+                    <th
+                      className="text-center border-0"
+                      style={{ width: "12%" }}
+                    >
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {filteredMembers.map((member) => (
-                  <tr style={{ verticalAlign: "middle" }} key={member._id}>
-                    <td>{member.name}</td>
-                    <td>{member.memberId}</td>
-                    <td>{member.phoneNumber}</td>
-                    <td>{member.address}</td>
-                    <td>{member.district}</td>
-                    {isAdmin && (
-                      <td>
-                        <div className="d-flex justify-content-evenly">
-                          <div>
-                            <Link
-                              style={{ color: "#212529" }}
-                              to={`/members/${member._id}`}
-                            >
-                              <i className="fa fa-eye" aria-hidden="true"></i>
-                            </Link>
-                          </div>
+                {filteredMembers.length > 0 ? (
+                  currentData.map((member) => (
+                    <tr style={{ verticalAlign: "middle" }} key={member._id}>
+                      <td>{member.name}</td>
+                      <td>{member.memberId}</td>
+                      <td>{member.phoneNumber}</td>
+                      <td>{member.address}</td>
+                      <td>{member.district}</td>
+                      {isAdmin && (
+                        <td>
+                          <div className="d-flex justify-content-evenly">
+                            <div>
+                              <Link
+                                style={{ color: "#212529" }}
+                                to={`/members/${member._id}`}
+                              >
+                                <i className="fa fa-eye" aria-hidden="true"></i>
+                              </Link>
+                            </div>
 
-                          <div
-                            className="cursor"
-                            onClick={() => handleShowModal(member)}
-                          >
-                            <i className="fa fa-edit" aria-hidden="true"></i>
+                            <div
+                              className="cursor"
+                              onClick={() => handleShowModal(member)}
+                            >
+                              <i className="fa fa-edit" aria-hidden="true"></i>
+                            </div>
+                            <div
+                              className="cursor"
+                              onClick={() => handleShowDeleteModal(member)}
+                            >
+                              <i className="fa fa-trash" aria-hidden="true"></i>
+                            </div>
                           </div>
-                          <div
-                            className="cursor"
-                            onClick={() => handleShowDeleteModal(member)}
-                          >
-                            <i className="fa fa-trash" aria-hidden="true"></i>
-                          </div>
-                        </div>
-                      </td>
-                    )}
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="border-0 text-center h5">
+                      Data Not Found
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </Table>
+            <div className="paginate">
+              {filteredMembers.length > itemsPerPage && (
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  pageCount={Math.ceil(filteredMembers.length / itemsPerPage)}
+                  onPageChange={handlePageChange}
+                  containerClassName={styles.pagination_ul}
+                  previousLinkClassName={styles.paginationLink}
+                  nextLinkClassName={styles.paginationLink}
+                  disabledClassName={styles.paginationDisabled}
+                  activeClassName={styles.paginationActive}
+                  forcePage={currentPage}
+                  pageRangeDisplayed={2}
+                  marginPagesDisplayed={1}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -46,6 +46,7 @@ const FormComponent = () => {
         email: "",
         joiningDate: "", // Reset the date fields to empty
       });
+      toast.success("Member added successfully");
     } catch (error) {
       //setError(error.response.data.message);
       toast.warn(error.response.data.message);

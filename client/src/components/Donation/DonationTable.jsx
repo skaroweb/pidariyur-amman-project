@@ -79,11 +79,11 @@ const DonationTable = () => {
   }, [dispatch, isToggled]);
 
   // ... (rest of the code)
-
+  const reversedDonationData = [...donationData].reverse();
   const filteredListOfDonation =
     adminProfile?.isAdmin !== true
-      ? donationData.filter((obj) => obj.userId === adminProfile?._id)
-      : donationData;
+      ? reversedDonationData.filter((obj) => obj.userId === adminProfile?._id)
+      : reversedDonationData;
 
   const itemsPerPage = 10;
   const offset = currentPage * itemsPerPage;
@@ -105,59 +105,92 @@ const DonationTable = () => {
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Date</th>
-                  <th className="border-0">Receipt no</th>
-                  <th className="border-0">Name</th>
-                  {/* <th className="border-0">Phone Number</th> */}
-                  <th className="border-0">Type</th>
-                  <th className="border-0">Amount</th>
+                  <th className="border-0" style={{ width: "18%" }}>
+                    Date
+                  </th>
+                  <th className="border-0" style={{ width: "18%" }}>
+                    Receipt no
+                  </th>
+                  <th className="border-0" style={{ width: "24%" }}>
+                    Name
+                  </th>
+                  <th className="border-0" style={{ width: "18%" }}>
+                    Type
+                  </th>
+                  <th className="border-0" style={{ width: "10%" }}>
+                    Amount
+                  </th>
 
-                  {isAdmin && <th className="border-0 text-center">Action</th>}
+                  {isAdmin && (
+                    <th
+                      className="border-0 text-center"
+                      style={{ width: "12%" }}
+                    >
+                      Action
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {currentData.map((donation) => (
-                  <tr key={donation._id}>
-                    <td className="">
-                      {new Date(donation.selectedDate).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="">{donation.donationId}</td>
-                    <td className="">{donation.name}</td>
-                    {/* <td className="border-0">{donation.phoneNumber}</td> */}
-                    <td className="">{donation.donationType}</td>
-                    <td className="">{donation.amount}</td>
-                    {isAdmin && (
-                      <td>
-                        <div className="d-flex justify-content-evenly">
-                          {/* <div>
+                {filteredListOfDonation.length > 0 ? (
+                  currentData.map((donation) => (
+                    <tr key={donation._id}>
+                      <td className="">
+                        {new Date(donation.selectedDate).toLocaleString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </td>
+                      <td className="">{donation.donationId}</td>
+                      <td className="">{donation.name}</td>
+                      {/* <td className="border-0">{donation.phoneNumber}</td> */}
+                      <td className="">{donation.donationType}</td>
+                      <td className="">{donation.amount}</td>
+                      {isAdmin && (
+                        <td>
+                          <div className="d-flex justify-content-evenly">
+                            {/* <div>
                     <Link to={`/invoice/${donation._id}`}>
                       <i className="fa fa-eye" aria-hidden="true"></i>
                     </Link>
                   </div> */}
 
-                          <>
-                            <div
-                              className="cursor"
-                              onClick={() => handleUpdate(donation)}
-                            >
-                              <i className="fa fa-edit" aria-hidden="true"></i>
-                            </div>
-                            <div
-                              className="cursor"
-                              onClick={() => handleDelete(donation)}
-                            >
-                              <i className="fa fa-trash" aria-hidden="true"></i>
-                            </div>
-                          </>
-                        </div>
-                      </td>
-                    )}
+                            <>
+                              <div
+                                className="cursor"
+                                onClick={() => handleUpdate(donation)}
+                              >
+                                <i
+                                  className="fa fa-edit"
+                                  aria-hidden="true"
+                                ></i>
+                              </div>
+                              <div
+                                className="cursor"
+                                onClick={() => handleDelete(donation)}
+                              >
+                                <i
+                                  className="fa fa-trash"
+                                  aria-hidden="true"
+                                ></i>
+                              </div>
+                            </>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="border-0 text-center h5">
+                      Data Not Found
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </Table>
             <div className="paginate">

@@ -14,6 +14,13 @@ const DonationMonthChart = () => {
       .then((response) => {
         const donations = response.data;
         const monthlyDonations = getMonthlyDonations(donations);
+        // // Format values to two decimal places
+        // const formattedMonthlyDonations = {};
+        // for (const month in monthlyDonations) {
+        //   formattedMonthlyDonations[month] = parseFloat(
+        //     monthlyDonations[month]
+        //   ).toFixed(2);
+        // }
 
         // Prepare the chart data
         const data = {
@@ -74,8 +81,14 @@ const DonationMonthChart = () => {
       const month = new Date(donation.selectedDate).toLocaleString("en", {
         month: "short",
       });
-      monthlyDonations[month] += parseFloat(donation.amount);
+      const donationAmount = parseFloat(donation.amount); // Convert string to float
+      monthlyDonations[month] += donationAmount;
     });
+
+    // Format values to two decimal places
+    for (const month in monthlyDonations) {
+      monthlyDonations[month] = monthlyDonations[month].toFixed(2);
+    }
 
     return monthlyDonations;
   };
