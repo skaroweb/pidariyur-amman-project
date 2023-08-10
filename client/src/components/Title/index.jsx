@@ -6,7 +6,7 @@ const Title = () => {
   const { title } = useTitleContext();
 
   return (
-    <div className="title">
+    <div className={styles.title}>
       <h1 className={styles.heading}>{title}</h1>
     </div>
   );

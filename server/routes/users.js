@@ -25,7 +25,8 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  User.find({ isAdmin: true })
+  //User.find({ isAdmin: true })
+  User.find()
     .then((users) => {
       res.json(users);
     })

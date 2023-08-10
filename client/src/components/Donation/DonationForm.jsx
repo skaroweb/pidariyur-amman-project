@@ -226,8 +226,11 @@ const DonationForm = () => {
   };
 
   return (
-    <div className={styles.Donate_form}>
-      {/* <input
+    <>
+      <h2>Donation Form:</h2>
+
+      <div className={styles.Donate_form}>
+        {/* <input
         type="number"
         value={(memberId?.seq + 1).toString().padStart(4, "0")}
         disabled
@@ -274,101 +277,108 @@ const DonationForm = () => {
       />
       <button onClick={handleSubmit}>Submit</button> */}
 
-      <Form>
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={4}>
-            Receipt No:
-          </Form.Label>
-          <Col sm={8}>
-            <Form.Control
-              type="number"
-              value={(memberId?.seq + 1).toString().padStart(4, "0")}
-              disabled
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={4}>
-            Donate Date:
-          </Form.Label>
-          <Col sm={8}>
-            <Form.Control
-              type="date"
-              value={selectedDate}
-              onChange={handleDateChange}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={4}>
-            Search phoneNumber:
-          </Form.Label>
-          <Col sm={8} className={styles.auto_complete_control}>
-            <Form.Control
-              type={selectedFromSuggestions ? "text" : "number"}
-              value={searchNumber}
-              onChange={handleSearchChange}
-              placeholder="search Name by phone num"
-            />
-            {suggestions.length > 0 ? (
-              <div className={styles.auto_complete}>
-                {suggestions.map((item) => (
-                  <div
-                    key={item.memberId}
-                    onClick={() => handleSelectSuggestion(item.name)}
-                  >
-                    {item.name} - {item.memberId}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div>
-                {searchNumber.trim() !== "" &&
-                  !selectedFromSuggestions &&
-                  "No Found"}
-              </div>
-            )}
-          </Col>
-        </Form.Group>
+        <Form>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={4}>
+              Receipt No:
+            </Form.Label>
+            <Col sm={8}>
+              <Form.Control
+                type="number"
+                value={(memberId?.seq + 1).toString().padStart(4, "0")}
+                disabled
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={4}>
+              Donate Date:
+            </Form.Label>
+            <Col sm={8}>
+              <Form.Control
+                type="date"
+                value={selectedDate}
+                onChange={handleDateChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={4}>
+              Phone Number:
+            </Form.Label>
+            <Col sm={8} className={styles.auto_complete_control}>
+              <Form.Control
+                type={selectedFromSuggestions ? "text" : "number"}
+                min={!selectedFromSuggestions ? "0" : undefined}
+                value={searchNumber}
+                onChange={handleSearchChange}
+                placeholder="Search Name by Phone Number"
+              />
+              {suggestions.length > 0 ? (
+                <div className={styles.auto_complete}>
+                  {suggestions.map((item) => (
+                    <div
+                      key={item.memberId}
+                      onClick={() => handleSelectSuggestion(item.name)}
+                    >
+                      {item.name} - {item.memberId}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.auto_complete}>
+                  {searchNumber.trim() !== "" &&
+                    !selectedFromSuggestions &&
+                    "No Found"}
+                </div>
+              )}
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={4}>
-            Donation Type:
-          </Form.Label>
-          <Col sm={8}>
-            <Form.Select
-              value={donationType}
-              onChange={(e) => setDonationType(e.target.value)}
-            >
-              <option value="">Select Donation Type</option>
-              <option value="AD">AD</option>
-              <option value="NK">NK</option>
-              <option value="SD">SD</option>
-              <option value="MD">MD</option>
-            </Form.Select>
-          </Col>
-        </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={4}>
+              Donation Type:
+            </Form.Label>
+            <Col sm={8}>
+              <Form.Select
+                value={donationType}
+                onChange={(e) => setDonationType(e.target.value)}
+              >
+                <option value="">Select Donation Type</option>
+                <option value="AD">AD</option>
+                <option value="NK">NK</option>
+                <option value="SD">SD</option>
+                <option value="MD">MD</option>
+              </Form.Select>
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-          <Form.Label column sm={4}>
-            Amount:
-          </Form.Label>
-          <Col sm={8}>
-            <Form.Control
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-            />
-          </Col>
-        </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column sm={4}>
+              Amount:
+            </Form.Label>
+            <Col sm={8}>
+              <Form.Control
+                type="number"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+              />
+            </Col>
+          </Form.Group>
 
-        <Button variant="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </Form>
-      <Toaster />
-    </div>
+          <Button
+            variant="primary"
+            className={styles.donation_submit}
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
+        </Form>
+        <Toaster />
+      </div>
+    </>
   );
 };
 

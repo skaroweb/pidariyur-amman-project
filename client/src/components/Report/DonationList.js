@@ -133,6 +133,17 @@ const DonationList = () => {
     return totalAmount;
   };
 
+  const calculateTotalAmountByType = (type) => {
+    const totalAmount = filteredData.reduce((total, donation) => {
+      if (donation.donationType === type) {
+        return total + Number(donation.amount);
+      }
+      return total;
+    }, 0);
+
+    return totalAmount;
+  };
+
   const handleSearchChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
@@ -183,6 +194,7 @@ const DonationList = () => {
             <input
               className="form-control"
               type={isNumberInput ? "number" : "text"}
+              min={!isNumberInput ? undefined : "0"}
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Search phone number or alternate phone number"
@@ -199,7 +211,9 @@ const DonationList = () => {
                 ))}
               </div>
             ) : (
-              <div>{searchQuery.trim() !== "" && "No Found"}</div>
+              <div className="auto_complete">
+                {searchQuery.trim() !== "" && "No Found"}
+              </div>
             )}
           </div>
 
@@ -259,10 +273,7 @@ const DonationList = () => {
           </div>
         </div>
 
-        <button
-          className="btn btn-secondary mt-2 mb-2"
-          onClick={handleDeselect}
-        >
+        <button className="btn btn-dark mt-2 mb-2" onClick={handleDeselect}>
           Clear
         </button>
       </div>
@@ -273,11 +284,11 @@ const DonationList = () => {
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Donation Date</th>
+                  <th className="border-0">Date</th>
                   <th className="border-0">Receipt no</th>
-                  <th className="border-0">Donor Name</th>
+                  <th className="border-0">Name</th>
                   <th className="border-0">Member Id</th>
-                  <th className="border-0">Donation Type</th>
+                  <th className="border-0">Type</th>
                   <th className="border-0">Amount</th>
                 </tr>
               </thead>
@@ -320,14 +331,55 @@ const DonationList = () => {
                 />
               )}
             </div>
+            <div className="total">
+              <div className="totalAmount">
+                Total Donation Amount:
+                <span>
+                  {" "}
+                  <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                  {calculateTotalAmount().toFixed(2)}
+                </span>
+              </div>
+              <div className="totalamounttypes">
+                <h6> Total Donation Amount (All Types)</h6>
+                <div className="donationTypeGrid">
+                  <div>
+                    AD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("AD").toFixed(2)}
+                    </span>
+                  </div>
 
-            <div className="totalAmount">
-              Total Donation Amount:
-              <span>
-                {" "}
-                <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
-                {calculateTotalAmount().toFixed(2)}
-              </span>
+                  <div>
+                    NK :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("NK").toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div>
+                    SD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("SD").toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div>
+                    MD :
+                    <span>
+                      {" "}
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {calculateTotalAmountByType("MD").toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

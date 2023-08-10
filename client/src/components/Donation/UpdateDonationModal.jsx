@@ -65,7 +65,7 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
         <Form onSubmit={handleFormSubmit}>
           {/* Add the date input field */}
           <Form.Group className="mb-1" controlId="formSelectedDate">
-            <Form.Label>Donation Date</Form.Label>
+            <Form.Label>Date</Form.Label>
             <Form.Control
               type="date"
               name="selectedDate"
@@ -74,7 +74,7 @@ const UpdateDonationModal = ({ show, handleClose, donationData }) => {
             />
           </Form.Group>
           <Form.Group className="mb-1" controlId="formDonationType">
-            <Form.Label>Donation Type</Form.Label>
+            <Form.Label>Type</Form.Label>
             <Form.Control
               as="select"
               name="donationType"

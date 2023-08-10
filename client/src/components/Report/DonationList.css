@@ -38,7 +38,7 @@
   font-size: 14px;
   padding: 15px 10px;
   text-align: center;
-  width: 180px;
+  width: fit-content;
 
   & span {
     color: #fff;
@@ -68,4 +68,36 @@
 }
 .auto_complete:empty {
   padding: unset;
+}
+.total {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.totalamounttypes {
+  background-color: #000;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  padding: 15px 10px;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-right: 10px;
+}
+.donationTypeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 5px 20px;
+}
+@media (max-width: 768px) {
+  .paginateTotal {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .totalAmount {
+    margin-top: 20px;
+  }
+  .overall_filter > div {
+    width: 100%;
+  }
 }

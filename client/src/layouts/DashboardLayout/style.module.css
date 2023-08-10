@@ -1,4 +1,4 @@
-.dashboard_layout {
+/* .dashboard_layout {
   display: grid;
   grid-template-columns: 275px 1fr;
   grid-template-rows: 100px 1fr;
@@ -12,7 +12,18 @@
 }
 .dashboard_layout div:nth-child(3) {
   grid-area: 2 / 2 / 3 / 3;
+} */
+
+.dashboard_layout div:nth-child(1) {
 }
+
 .Main_component {
-  padding: 10px;
+  padding: 20px;
+  margin-left: 275px;
+}
+
+@media (max-width: 768px) {
+  .Main_component {
+    margin-left: 0px;
+  }
 }

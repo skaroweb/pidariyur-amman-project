@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Table } from "react-bootstrap"; // Import Bootstrap card and grid components
+import { Table, Col } from "react-bootstrap"; // Import Bootstrap card and grid components
 import UpdateMemberModal from "./UpdateMemberModal"; // Import the modal component
 import DeleteMemberModal from "./DeleteMemberModal"; // Import the modal component
 import { useSelector, useDispatch } from "react-redux";
@@ -14,7 +14,7 @@ const List = () => {
   // const [loading, setLoading] = useState(true);
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -193,9 +193,28 @@ const List = () => {
     return `${day}/${month}/${year}`;
   };
 
+  const filteredMembers = memberData.filter((member) => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    return (
+      member.name.toLowerCase().includes(lowerCaseQuery) ||
+      member.phoneNumber.includes(searchQuery) ||
+      member.alternatePhoneNumber.includes(searchQuery)
+    );
+  });
+
   return (
     <div>
-      <h2>Member List</h2>
+      <h2>Member List:</h2>
+      {/* Search Input */}
+      <Col sm={3} className="mb-3">
+        <input
+          type="text"
+          placeholder="Search by name or phone number"
+          className="form-control"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </Col>
 
       {/* <Row>
         {memberData.map((member) => (
@@ -270,7 +289,7 @@ const List = () => {
                 </tr>
               </thead>
               <tbody>
-                {memberData.map((member) => (
+                {filteredMembers.map((member) => (
                   <tr style={{ verticalAlign: "middle" }} key={member._id}>
                     <td>{member.name}</td>
                     <td>{member.memberId}</td>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Col, Card, Row } from "react-bootstrap";
+import "./OverallDetail.css";
 
 const OverallDetail = () => {
   const serverURL = process.env.REACT_APP_SERVER_URL;
@@ -85,59 +87,37 @@ const OverallDetail = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-evenly flex-wrap mt-5">
-        <div className="mb-4 col-xl-4 col-sm-6 col-12">
-          <div className="shadow-sm card border-light">
-            <div className="card-body">
-              <div className="d-block d-xl-flex align-items-center row">
-                <div className="text-xl-center d-flex align-items-center justify-content-xl-center mb-3 mb-xl-0 col-xl-5">
+      <Row className="mt-5">
+        <Col xl={4} sm={6} xs={12} className="mb-3">
+          <Card border="light" className="shadow-sm">
+            <Card.Body>
+              <Row className="d-flex align-items-center">
+                <Col xl={5} xs={5} className="text-center">
                   <div className="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0">
                     <i className="fa-solid fa-users fa-2xl"></i>
                   </div>
-                </div>
-                <div className="px-xl-0 col-xl-7 col-12">
-                  <div className="d-none d-sm-block">
+                </Col>
+                <Col xl={7} xs={7} className="px-xl-0">
+                  <div className="d-sm-block">
                     <h5>Total Members</h5>
                     <h3 className="mb-1">{memberCount.length}</h3>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mb-4 col-xl-4 col-sm-6 col-12">
-          <div className="shadow-sm card border-light">
-            <div className="card-body">
-              <div className="d-block d-xl-flex align-items-center row">
-                <div className="text-xl-center d-flex align-items-center justify-content-xl-center mb-3 mb-xl-0 col-xl-5">
-                  <div className="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0">
-                    <i className="fa-solid fa-hand-holding-dollar fa-2xl"></i>
-                  </div>
-                </div>
-                <div className="px-xl-0 col-xl-7 col-12">
-                  <div className="d-none d-sm-block">
-                    <h5>Current Year Donation</h5>
-                    <h3 className="mb-1">
-                      <i className="fa-solid fa-indian-rupee-sign"></i>
-                      {donationCount.total}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mb-4 col-xl-6 col-sm-6 col-12">
-          <div className="shadow-sm card border-light">
-            <div className="card-body">
-              <div className="d-block d-xl-flex align-items-center row">
-                <div className="text-xl-center d-flex align-items-center justify-content-xl-center mb-3 mb-xl-0 col-xl-5">
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xl={4} sm={6} xs={12} className="mb-3">
+          <Card border="light" className="shadow-sm">
+            <Card.Body>
+              <Row className="d-flex align-items-center">
+                <Col xl={5} xs={5} className="text-center">
                   <div className="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0">
                     <i className="fa-solid fa-circle-dollar-to-slot fa-2xl"></i>
                   </div>
-                </div>
-                <div className="px-xl-0 col-xl-7 col-12">
-                  <div className="d-none d-sm-block">
+                </Col>
+                <Col xl={7} xs={7} className="px-xl-0">
+                  <div className="d-sm-block">
                     <h5>Donation types</h5>
                     {Object.entries(donationCount.byType).map(
                       ([type, amount]) => {
@@ -148,19 +128,41 @@ const OverallDetail = () => {
                         return (
                           <h6 key={type} className="fw-normal text-gray">
                             {type} -{" "}
-                            <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                            <i className="fa-solid fa-indian-rupee-sign"> </i>{" "}
                             {amount}
                           </h6>
                         );
                       }
                     )}
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xl={4} sm={6} xs={12} className="mb-3">
+          <Card border="light" className="shadow-sm">
+            <Card.Body>
+              <Row className="d-flex align-items-center">
+                <Col xl={5} xs={5} className="text-center">
+                  <div className="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0">
+                    <i className="fa-solid fa-hand-holding-dollar fa-2xl"></i>
+                  </div>
+                </Col>
+                <Col xl={7} xs={7} className="px-xl-0">
+                  <div className="d-sm-block">
+                    <h5>Current Year Donation</h5>
+                    <h3 className="mb-1">
+                      <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                      {donationCount.total}
+                    </h3>
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

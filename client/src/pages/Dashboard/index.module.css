@@ -1,0 +1,24 @@
+.chartMain {
+  display: flex;
+}
+.chartMain > div {
+  width: 50%;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+.chartMain > div:first-child {
+  margin-right: 20px;
+}
+@media (max-width: 768px) {
+  .chartMain {
+    flex-wrap: wrap;
+  }
+  .chartMain > div {
+    width: 100%;
+  }
+  .chartMain > div:first-child {
+    margin-right: 0px;
+    margin-bottom: 20px;
+  }
+}

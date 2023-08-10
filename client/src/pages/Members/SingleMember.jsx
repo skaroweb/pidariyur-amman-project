@@ -32,7 +32,7 @@ const SingleMember = () => {
   return (
     <>
       <h2>Member Details</h2>
-      <Card style={{ width: "60%" }}>
+      <Card className="singlemain_card">
         <Card.Header>
           <Card.Title>Member ID: {memberData.memberId}</Card.Title>
         </Card.Header>
