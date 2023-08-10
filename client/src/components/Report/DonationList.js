@@ -183,6 +183,7 @@ const DonationList = () => {
             <input
               className="form-control"
               type={isNumberInput ? "number" : "text"}
+              min={!isNumberInput ? undefined : "0"}
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Search phone number or alternate phone number"
@@ -199,7 +200,9 @@ const DonationList = () => {
                 ))}
               </div>
             ) : (
-              <div>{searchQuery.trim() !== "" && "No Found"}</div>
+              <div className="auto_complete">
+                {searchQuery.trim() !== "" && "No Found"}
+              </div>
             )}
           </div>
 
@@ -259,10 +262,7 @@ const DonationList = () => {
           </div>
         </div>
 
-        <button
-          className="btn btn-secondary mt-2 mb-2"
-          onClick={handleDeselect}
-        >
+        <button className="btn btn-dark mt-2 mb-2" onClick={handleDeselect}>
           Clear
         </button>
       </div>
@@ -273,11 +273,11 @@ const DonationList = () => {
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Donation Date</th>
+                  <th className="border-0">Date</th>
                   <th className="border-0">Receipt no</th>
-                  <th className="border-0">Donor Name</th>
+                  <th className="border-0">Name</th>
                   <th className="border-0">Member Id</th>
-                  <th className="border-0">Donation Type</th>
+                  <th className="border-0">Type</th>
                   <th className="border-0">Amount</th>
                 </tr>
               </thead>

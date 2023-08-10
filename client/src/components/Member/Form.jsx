@@ -53,6 +53,7 @@ const FormComponent = () => {
   };
   return (
     <>
+      <h2>Member Form:</h2>
       <Form className={styles.form} onSubmit={handleSubmit}>
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
           <Form.Label column sm={4}>
@@ -207,7 +208,11 @@ const FormComponent = () => {
           <Col sm={1}></Col>
         </Form.Group>
         <div className={styles.error}>* Required field </div>
-        <Button className="mt-4" variant="primary" type="submit">
+        <Button
+          className={`${styles.member_submit}  mt-4`}
+          variant="primary"
+          type="submit"
+        >
           Submit
         </Button>
       </Form>

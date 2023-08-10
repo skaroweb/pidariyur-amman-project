@@ -22,8 +22,22 @@ const DonationMonthChart = () => {
             {
               label: "Donations",
               data: Object.values(monthlyDonations),
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
-              borderColor: "rgba(75, 192, 192, 1)",
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.5)",
+                "rgba(54, 162, 235, 0.5)",
+                "rgba(255, 206, 86, 0.5)",
+                "rgba(75, 192, 192, 0.5)",
+                "rgba(153, 102, 255, 0.5)",
+                "rgba(255, 159, 64, 0.5)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+              ],
               borderWidth: 1,
             },
           ],
@@ -43,7 +57,7 @@ const DonationMonthChart = () => {
     // Initialize monthlyDonations with zero values for all months
     const monthlyDonations = {};
     const months = Array.from({ length: 12 }, (_, i) =>
-      new Date(0, i).toLocaleString("en", { month: "long" })
+      new Date(0, i).toLocaleString("en", { month: "short" })
     );
     months.forEach((month) => {
       monthlyDonations[month] = 0.0;
@@ -58,7 +72,7 @@ const DonationMonthChart = () => {
     // Group donations by month and update monthlyDonations
     currentYearDonations.forEach((donation) => {
       const month = new Date(donation.selectedDate).toLocaleString("en", {
-        month: "long",
+        month: "short",
       });
       monthlyDonations[month] += parseFloat(donation.amount);
     });
@@ -69,11 +83,16 @@ const DonationMonthChart = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: 0, // Remove any default padding
+    },
     scales: {
       x: {
         title: {
-          display: true,
           text: "Month",
+        },
+        grid: {
+          display: false, // Hide X-axis grid lines
         },
       },
       y: {
@@ -91,7 +110,7 @@ const DonationMonthChart = () => {
       <h2>Monthly Donations for {new Date().getFullYear()}</h2>
       <div style={{ width: "100%", margin: "auto" }}>
         {Object.keys(chartData).length > 0 && (
-          <Bar data={chartData} options={options} />
+          <Bar data={chartData} options={options} height={300} />
         )}
       </div>
     </div>

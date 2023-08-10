@@ -10,10 +10,12 @@ const Header = () => {
     //window.location.reload();
     document.location.replace("/");
   };
-
+  const [click, setClick] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const serverURL = process.env.REACT_APP_SERVER_URL;
   // State to track the user's authentication status
+
+  const handleClick = () => setClick(!click);
 
   useEffect(() => {
     // Retrieve the JWT token from localStorage
@@ -58,7 +60,15 @@ const Header = () => {
 
   return (
     <div>
-      <div className="flex-column mt-5 pt-3 pt-md-0 nav">
+      {/* <nav className="navbar-theme-primary px-4 d-md-none navbar navbar-dark justify-content-end">
+        <div className="nav-icon" onClick={handleClick}>
+          <i className={click ? "fa fa-times" : "fa fa-bars"}></i>
+        </div>
+      </nav> */}
+      {/* <div
+        className={`sidebar-inner px-4 pt-3 ${click === true ? "active" : ""}`}
+      > */}
+      <div className="flex-column pt-3 pt-md-0 nav">
         <nav className={styles.navbar}>
           <ul className={styles.header_nav}>
             <li>
@@ -69,7 +79,7 @@ const Header = () => {
                 }
               >
                 <i className="fa fa-pie-chart" aria-hidden="true"></i>
-                <span>Dashboard</span>
+                <span>{isAdmin ? "Dashboard" : "Donation"}</span>
               </NavLink>
             </li>
             {isAdmin && (
@@ -98,17 +108,6 @@ const Header = () => {
               </NavLink>
             </li>
 
-            {/* <li>
-              <NavLink
-                to="/members-list"
-                className={({ isActive }) =>
-                  isActive ? "NavActive" : "inactive"
-                }
-              >
-                <i className="fa fa-users" aria-hidden="true"></i>
-                <span>Members List</span>
-              </NavLink>
-            </li> */}
             {isAdmin && (
               <li>
                 <NavLink
@@ -146,6 +145,7 @@ const Header = () => {
         </nav>
       </div>
     </div>
+    // </div>
   );
 };
 export default Header;

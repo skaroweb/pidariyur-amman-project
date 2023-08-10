@@ -1,5 +1,5 @@
 .Donate_form {
-  padding: 30px;
+  padding: 30px 0;
   width: 60%;
 }
 .auto_complete {
@@ -23,4 +23,9 @@
 }
 .auto_complete_control {
   position: relative;
+}
+@media (max-width: 768px) {
+  .Donate_form {
+    width: 100%;
+  }
 }

@@ -1,0 +1,12 @@
+@media (max-width: 768px) {
+  .sidebar-inner {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0 !important;
+    transition: max-height 0.2s ease-out;
+  }
+  .sidebar-inner.active {
+    max-height: -webkit-max-content;
+    max-height: max-content;
+  }
+}

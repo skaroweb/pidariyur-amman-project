@@ -43,8 +43,8 @@ const Setting = () => {
     <div>
       <h2 className="mb-4">Title of the Page</h2>
       <Form>
-        <Row>
-          <Col md={4}>
+        <div className="row">
+          <Col md={4} style={{ marginRight: "20px" }}>
             <Form.Group controlId="titleInput">
               <Form.Control
                 type="text"
@@ -54,12 +54,12 @@ const Setting = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={6} className="mt-3 mt-lg-0">
             <Button variant="primary" onClick={handleSaveTitle}>
               Save Title
             </Button>
           </Col>
-        </Row>
+        </div>
       </Form>
     </div>
   );

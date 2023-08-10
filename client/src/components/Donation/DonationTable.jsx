@@ -6,6 +6,8 @@ import { Table } from "react-bootstrap";
 import axios from "axios";
 import UpdateDonationModal from "./UpdateDonationModal";
 import DeleteConfirmationModal from "./DeleteDonationModal";
+import ReactPaginate from "react-paginate";
+import styles from "../Report/Pagination.module.css";
 
 const DonationTable = () => {
   const isToggled = useSelector((state) => state.donation.isToggled);
@@ -13,10 +15,9 @@ const DonationTable = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
-  // console.log("isToggled:", isToggled);
-  // console.log("donationData:", donationData);
-
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminProfile, setAdminProfile] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const serverURL = process.env.REACT_APP_SERVER_URL;
   // State to track the user's authentication status
 
@@ -34,13 +35,13 @@ const DonationTable = () => {
         .get(`${serverURL}/api/user/`)
         .then((response) => {
           // Find the user with the currentUserId from the fetched data
-
           const currentUser = response.data.find(
             (user) => user._id === currentUserId
           );
 
           if (currentUser) {
             setIsAdmin(currentUser.isAdmin);
+            setAdminProfile(currentUser);
           } else {
             console.log("User not found in fetched data.");
           }
@@ -73,28 +74,27 @@ const DonationTable = () => {
     setShowDeleteModal(true);
   };
 
-  //const [donationData, setDonationData] = useState([]);
-  // const serverURL = process.env.REACT_APP_SERVER_URL;
-
-  // useEffect(() => {
-  //   const fetchDonationData = async () => {
-  //     try {
-  //       const response = await axios.get(`${serverURL}/api/donate/`);
-  //       setDonationData(response.data); // Update the 'donationData' state with the fetched data
-  //       // console.log(response);
-  //     } catch (error) {
-  //       console.error("Error fetching donation data:", error);
-  //     }
-  //   };
-
-  //   fetchDonationData();
-  // }, []);
-
   useEffect(() => {
     dispatch(fetchDonationData());
   }, [dispatch, isToggled]);
 
   // ... (rest of the code)
+
+  const filteredListOfDonation =
+    adminProfile?.isAdmin !== true
+      ? donationData.filter((obj) => obj.userId === adminProfile?._id)
+      : donationData;
+
+  const itemsPerPage = 10;
+  const offset = currentPage * itemsPerPage;
+  const currentData = filteredListOfDonation.slice(
+    offset,
+    offset + itemsPerPage
+  );
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   return (
     <div>
@@ -105,18 +105,18 @@ const DonationTable = () => {
             <Table responsive>
               <thead className="thead-light">
                 <tr>
-                  <th className="border-0">Donation date</th>
+                  <th className="border-0">Date</th>
                   <th className="border-0">Receipt no</th>
-                  <th className="border-0">Donor Name</th>
+                  <th className="border-0">Name</th>
                   {/* <th className="border-0">Phone Number</th> */}
-                  <th className="border-0">Donation Type</th>
+                  <th className="border-0">Type</th>
                   <th className="border-0">Amount</th>
 
                   {isAdmin && <th className="border-0 text-center">Action</th>}
                 </tr>
               </thead>
               <tbody>
-                {donationData.map((donation) => (
+                {currentData.map((donation) => (
                   <tr key={donation._id}>
                     <td className="">
                       {new Date(donation.selectedDate).toLocaleString("en-US", {
@@ -160,6 +160,26 @@ const DonationTable = () => {
                 ))}
               </tbody>
             </Table>
+            <div className="paginate">
+              {filteredListOfDonation.length > itemsPerPage && (
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  pageCount={Math.ceil(
+                    filteredListOfDonation.length / itemsPerPage
+                  )}
+                  onPageChange={handlePageChange}
+                  containerClassName={styles.pagination_ul}
+                  previousLinkClassName={styles.paginationLink}
+                  nextLinkClassName={styles.paginationLink}
+                  disabledClassName={styles.paginationDisabled}
+                  activeClassName={styles.paginationActive}
+                  forcePage={currentPage}
+                  pageRangeDisplayed={2}
+                  marginPagesDisplayed={1}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
