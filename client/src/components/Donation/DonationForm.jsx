@@ -13,7 +13,7 @@ const DonationForm = () => {
   const [name, setName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [data, setData] = useState([]);
-  const [showName, setShowName] = useState(false);
+  // const [showName, setShowName] = useState(false);
   const [donationType, setDonationType] = useState("");
   const [amount, setAmount] = useState("");
   const [memberId, setMemberId] = useState(null);
@@ -55,7 +55,7 @@ const DonationForm = () => {
     setSearchNumber(selectedName); // Clear the search number to avoid showing the phone number in the input field
     setSelectedFromSuggestions(true); // Mark that the user has selected a suggestion
     setName(selectedName);
-    setShowName(true); // Show the name when a suggestion is selected
+    //  setShowName(true); // Show the name when a suggestion is selected
     setSuggestions([]); // Clear the suggestions when a suggestion is selected
   };
 
@@ -82,11 +82,11 @@ const DonationForm = () => {
 
     if (foundName) {
       setName(foundName);
-      setShowName(true);
+      //  setShowName(true);
       setSelectedFromSuggestions(false); // Set to false when the user types and the search result is found
     } else {
       setName("");
-      setShowName(false);
+      //  setShowName(false);
     }
   };
 
@@ -131,23 +131,23 @@ const DonationForm = () => {
     fetchData();
   }, []);
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      const foundName = findNameByPhoneNumber(searchNumber);
-      setName(foundName || "Not Found");
-      setShowName(true); // Show the name after pressing Enter
-      // Clear the suggestions when the Enter key is pressed
-      setSuggestions([]);
-    }
-  };
+  // const handleKeyPress = (event) => {
+  //   if (event.key === "Enter") {
+  //     const foundName = findNameByPhoneNumber(searchNumber);
+  //     setName(foundName || "Not Found");
+  //     //  setShowName(true); // Show the name after pressing Enter
+  //     // Clear the suggestions when the Enter key is pressed
+  //     setSuggestions([]);
+  //   }
+  // };
 
-  const handleSearchBlur = () => {
-    if (searchNumber === "") {
-      // If the input field is empty when blurred, reset the name and showName state
-      setName("");
-      setShowName(false);
-    }
-  };
+  // const handleSearchBlur = () => {
+  //   if (searchNumber === "") {
+  //     // If the input field is empty when blurred, reset the name and showName state
+  //     setName("");
+  //     //  setShowName(false);
+  //   }
+  // };
 
   const handleSubmit = () => {
     // Retrieve the JWT token from localStorage
@@ -204,7 +204,7 @@ const DonationForm = () => {
           setDonationType("");
           setAmount("");
           setSelectedDate(getFormattedDate(new Date()));
-          setShowName(false);
+          //   setShowName(false);
           toast.success("Donation added successfully");
         })
         .catch((error) => {

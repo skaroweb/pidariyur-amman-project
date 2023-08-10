@@ -96,3 +96,25 @@
   color: white;
   margin: 10px;
 }
+@media (max-width: 768px) {
+  .login_form_container {
+    width: 90%;
+    height: auto;
+    flex-direction: column;
+    border-radius: 10px;
+    padding-top: 20px;
+    background-color: white;
+    overflow: hidden;
+  }
+  .input {
+    width: 230px;
+  }
+  .form_container h1 {
+    font-size: 25px;
+  }
+  .right {
+    border-top-right-radius: unset;
+    border-bottom-right-radius: unset;
+    padding-bottom: 20px;
+  }
+}

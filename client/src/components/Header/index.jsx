@@ -10,12 +10,12 @@ const Header = () => {
     //window.location.reload();
     document.location.replace("/");
   };
-  const [click, setClick] = useState(false);
+  // const [click, setClick] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const serverURL = process.env.REACT_APP_SERVER_URL;
   // State to track the user's authentication status
 
-  const handleClick = () => setClick(!click);
+  //const handleClick = () => setClick(!click);
 
   useEffect(() => {
     // Retrieve the JWT token from localStorage
