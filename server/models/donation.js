@@ -16,9 +16,9 @@ const donationSchema = new mongoose.Schema(
     },
     donarManualId: {
       type: String,
-      unique: true,
+      // unique: true,
     },
-    donationId: { type: String, unique: true },
+    donationId: { type: String },
     // receiptNo: { type: String },
     // phoneNumber: { type: String, required: true },
     name: { type: String, required: true },

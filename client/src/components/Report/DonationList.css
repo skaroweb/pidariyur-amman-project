@@ -32,7 +32,7 @@
   align-items: center;
 }
 .totalAmount {
-  background-color: #000;
+  background-color: #262b40 !important;
   border-radius: 10px;
   color: #fff;
   font-size: 14px;
@@ -74,7 +74,7 @@
   flex-direction: row-reverse;
 }
 .totalamounttypes {
-  background-color: #000;
+  background-color: #262b40 !important;
   border-radius: 10px;
   color: #fff;
   font-size: 14px;
