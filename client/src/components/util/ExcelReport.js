@@ -28,7 +28,6 @@ const ExcelReport = (props) => {
       donationId: obj.donationId,
       donationType: obj.donationType,
       name: obj.name,
-      phoneNumber: obj.phoneNumber,
       selectedDate: new Date(obj.selectedDate).toLocaleString("en-US", {
         year: "numeric",
         month: "long",

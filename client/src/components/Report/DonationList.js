@@ -108,6 +108,10 @@ const DonationList = () => {
         return direction === "ascending"
           ? a.amount - b.amount
           : b.amount - a.amount;
+      } else if (key === "receiptNo") {
+        return direction === "ascending"
+          ? a.donationId.localeCompare(b.donationId)
+          : b.donationId.localeCompare(a.donationId);
       }
       return 0;
     });
@@ -323,6 +327,12 @@ const DonationList = () => {
                   </th>
                   <th className="border-0" style={{ width: "15%" }}>
                     Receipt no
+                    <span
+                      className="handleSort"
+                      onClick={() => handleSort("receiptNo")}
+                    >
+                      <i className="fa fa-sort" aria-hidden="true"></i>
+                    </span>
                   </th>
                   <th className="border-0" style={{ width: "20%" }}>
                     Name
